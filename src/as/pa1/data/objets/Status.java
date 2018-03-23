@@ -1,18 +1,16 @@
 package as.pa1.data.objets;
 
-public class SPEED {
+public class Status {
     private int car_id;
     private int time;
     private String msg_id;
-    private int speed;
-    private int localization;
+    private String car_status;
     
-    public SPEED (int car_id, int time, String msg_id, int speed, int localization) {
+    public Status (int car_id, int time, String msg_id, String car_status) {
         this.car_id = car_id;
         this.time = time;
         this.msg_id = msg_id;
-        this.speed = speed;
-        this.localization = localization;
+        this.car_status = car_status;
     }
 
     /**
@@ -37,16 +35,9 @@ public class SPEED {
     }
 
     /**
-     * @return the speed
+     * @return the car_status
      */
-    public int getSpeed() {
-        return speed;
-    }
-
-    /**
-     * @return the localization
-     */
-    public int getLocalization() {
-        return localization;
+    public String getCar_status() {
+        return car_status;
     }
 }

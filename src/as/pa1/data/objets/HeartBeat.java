@@ -1,16 +1,14 @@
 package as.pa1.data.objets;
 
-public class STATUS {
+public class HeartBeat {
     private int car_id;
     private int time;
     private String msg_id;
-    private String car_status;
     
-    public STATUS (int car_id, int time, String msg_id, String car_status) {
+    public HeartBeat (int car_id, int time, String msg_id) {
         this.car_id = car_id;
         this.time = time;
         this.msg_id = msg_id;
-        this.car_status = car_status;
     }
 
     /**
@@ -32,12 +30,5 @@ public class STATUS {
      */
     public String getMsg_id() {
         return msg_id;
-    }
-
-    /**
-     * @return the car_status
-     */
-    public String getCar_status() {
-        return car_status;
     }
 }
