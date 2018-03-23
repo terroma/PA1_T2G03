@@ -30,7 +30,7 @@ public class CollectEntityHB {
         props.put(ProducerConfig.CLIENT_ID_CONFIG, CLIENT_ID);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        props.put(ProducerConfig.ACKS_CONFIG, 0);
+        props.put(ProducerConfig.ACKS_CONFIG, "0");
         return new KafkaProducer<>(props);
     }
     

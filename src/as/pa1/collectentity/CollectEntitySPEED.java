@@ -18,6 +18,7 @@ import org.apache.kafka.common.serialization.LongSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 public class CollectEntitySPEED {
+    
     private static final String PATH = new File("").getAbsolutePath().concat("/src/as/pa1/data/SPEED.txt");
     private static final String CLIENT_ID = "CollectEntitySPEED";
     private static final String TOPIC = "EnrichTopic_2";
@@ -32,8 +33,8 @@ public class CollectEntitySPEED {
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         props.put(ProducerConfig.ACKS_CONFIG, "all");
-        props.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, 1);
-        props.put("max.inflight.messages", 1);
+        //props.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, 1);
+        //props.put("max.inflight.messages", 1);
         return new KafkaProducer<>(props);
     }
     

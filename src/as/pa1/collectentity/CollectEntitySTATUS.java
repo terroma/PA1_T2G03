@@ -18,6 +18,7 @@ import org.apache.kafka.common.serialization.LongSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 public class CollectEntitySTATUS {
+    
     private static final String PATH = new File("").getAbsolutePath().concat("/src/as/pa1/data/STATUS.txt");
     private static final String CLIENT_ID = "CollectEntitySTATUS";
     private static final String TOPIC = "EnrichTopic_3";
