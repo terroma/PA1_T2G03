@@ -1,11 +1,13 @@
 package as.pa1.collectentity;
 
+import as.pa1.data.objets.HeartBeat;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -19,40 +21,49 @@ public class CollectEntityHB {
     
     private static final String PATH = new File("").getAbsolutePath().concat("/src/as/pa1/data/HB.txt");
     private static final String CLIENT_ID = "CollectEntityHB";
-    private static final String TOPIC = "EnrichTopic_1";
+    private static final String TOPIC = "test";
     private static final String BOOTSTRAP_SERVERS = 
             "loaclhost:9092,loacalhost:9093,localhost:9094";
     private BufferedReader in;
     
-    private Producer<Long, String> createProducer() {
+    private Producer<Long, HeartBeat> createProducer() {
         Properties props = new Properties();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ProducerConfig.CLIENT_ID_CONFIG, CLIENT_ID);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "as.pa1.serialization.HeartBeatSerializer");
         props.put(ProducerConfig.ACKS_CONFIG, "0");
         return new KafkaProducer<>(props);
     }
     
-    private void runProducer(Producer<Long, String> producer) {
+    private void runProducer() {
         long time = System.currentTimeMillis();
+        Producer<Long, HeartBeat> producer = createProducer();
         
         try {
             in = new BufferedReader(new FileReader(PATH));
             String line;
             
             while ((line = in.readLine()) != null) {
+                String[] lineArgs = line.split("\\|");
+                HeartBeat hb = new HeartBeat(Integer.parseInt(lineArgs[0]),Integer.parseInt(lineArgs[1]),lineArgs[2]);
+                producer.send(new ProducerRecord<Long, HeartBeat>(TOPIC,time,hb)).get();
+                /**
                 final ProducerRecord<Long, String> record = new ProducerRecord<>(TOPIC,line);
                 producer.send(record);
                 long elapsedTime = System.currentTimeMillis() - time;
                 System.out.printf("sent record(key=%s value=%s) time=%d\n",
                                     record.key(), record.value(), elapsedTime);
-                
+                **/
             }
             in.close();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(CollectEntityHB.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
+            Logger.getLogger(CollectEntityHB.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(CollectEntityHB.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ExecutionException ex) {
             Logger.getLogger(CollectEntityHB.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             producer.flush();
@@ -63,7 +74,7 @@ public class CollectEntityHB {
     
     public static void main(String[] args) {
         CollectEntityHB cehb = new CollectEntityHB();
-        cehb.runProducer(cehb.createProducer());
+        cehb.runProducer();
     }
     
 }
