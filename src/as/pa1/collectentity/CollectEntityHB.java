@@ -21,7 +21,7 @@ public class CollectEntityHB {
     
     private static final String PATH = new File("").getAbsolutePath().concat("/src/as/pa1/data/HB.txt");
     private static final String CLIENT_ID = "CollectEntityHB";
-    private static final String TOPIC = "test";
+    private static final String TOPIC = "EnrichTopic_1";
     private static final String BOOTSTRAP_SERVERS = 
             "loaclhost:9092,loacalhost:9093,localhost:9094";
     private BufferedReader in;

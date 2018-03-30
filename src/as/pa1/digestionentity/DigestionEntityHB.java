@@ -15,11 +15,12 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 
 public class DigestionEntityHB {
     
-    private final static String ENRICHTOPIC = "test";
+    private final static String ENRICHTOPIC = "EnrichTopic_1";
+    private final static String ENRICHEDTOPIC = "EnrichedTopic_1";
     private final static String BOOTSTRAP_SERVERS =
             "localhost:9092, localhost:9093, localhost:9094";
     
-    private static Consumer<Long, HeartBeat> createConsumer() {
+    private Consumer<Long, HeartBeat> createConsumer() {
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "DigestionEntityHB");
@@ -30,6 +31,8 @@ public class DigestionEntityHB {
         consumer.subscribe(Collections.singleton(ENRICHTOPIC));
         return consumer;
     }
+    
+    
     
     private void runConsumer() throws InterruptedException {
         

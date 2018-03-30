@@ -12,60 +12,38 @@ public class SpeedSerializer implements Serializer<Speed> {
     private final String encoding = "UTF-8";
 
     @Override
-    public void configure(Map<String, ?> map, boolean bln) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    public void configure(Map<String, ?> map, boolean bln) {    }
 
     @Override
-    public byte[] serialize(String topic, Speed data) {
-        int sizeOfCar_id;
-        int sizeOfTime;
+    public byte[] serialize(String topic, Speed speed) {
         int sizeOfMsg_id;
-        int sizeOfSpeed;
-        int sizeOfLocalization;
-        byte[] serializedCar_id;
-        byte[] serializedTime;
         byte[] serializedMsg_id;
-        byte[] serializedSpeed;
-        byte[] serializedLocalization;
-
+        
         try {
-            if (data != null) {
+            if (speed == null) {
+                System.out.println("Null recieved in SpeedSerializer.");
                 return null;
             } else {
-                serializedCar_id = Integer.toString(data.getCar_id()).getBytes(encoding);
-                sizeOfCar_id = serializedCar_id.length;
-                serializedTime = Integer.toString(data.getTime()).getBytes(encoding);
-                sizeOfTime = serializedTime.length;
-                serializedMsg_id = data.getMsg_id().getBytes(encoding);
-                sizeOfMsg_id = serializedMsg_id.length;
-                serializedSpeed = Integer.toString(data.getSpeed()).getBytes(encoding);
-                sizeOfSpeed = serializedSpeed.length;
-                serializedLocalization = Integer.toString(data.getLocalization()).getBytes(encoding);
-                sizeOfLocalization = serializedLocalization.length;
                 
-                ByteBuffer buf = ByteBuffer.allocate(4+4+sizeOfCar_id+4+sizeOfTime+4+sizeOfMsg_id+4+sizeOfSpeed+4+sizeOfLocalization);
-                buf.putInt(sizeOfCar_id);
-                buf.put(serializedCar_id);
-                buf.putInt(sizeOfTime);
-                buf.put(serializedTime);
+                serializedMsg_id = speed.getMsg_id().getBytes(encoding);
+                sizeOfMsg_id = serializedMsg_id.length;
+                
+                ByteBuffer buf = ByteBuffer.allocate(4+4+4+sizeOfMsg_id+4+4);
+                buf.putInt(speed.getCar_id());
+                buf.putInt(speed.getTime());
                 buf.putInt(sizeOfMsg_id);
                 buf.put(serializedMsg_id);
-                buf.putInt(sizeOfSpeed);
-                buf.put(serializedSpeed);
-                buf.putInt(sizeOfLocalization);
-                buf.put(serializedLocalization);
+                buf.putInt(speed.getSpeed());
+                buf.putInt(speed.getLocalization());
                 
                 return buf.array();
             }   
         } catch (UnsupportedEncodingException e) {
-            throw new SerializationException("Error serializing Speed to byte[]");
+            throw new SerializationException("Error serializing Speed to byte[].");
         }
     }
 
     @Override
-    public void close() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    public void close() {   }
 
 }

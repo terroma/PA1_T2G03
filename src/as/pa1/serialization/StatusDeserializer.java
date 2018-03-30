@@ -1,12 +1,12 @@
 package as.pa1.serialization;
 
-import as.pa1.data.objets.HeartBeat;
+import as.pa1.data.objets.Status;
 import java.nio.ByteBuffer;
 import java.util.Map;
 import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.serialization.Deserializer;
 
-public class HeartBeatDeserializer implements Deserializer<HeartBeat> {
+public class StatusDeserializer implements Deserializer<Status> {
     
     private final String encoding = "UTF-8";
 
@@ -14,14 +14,13 @@ public class HeartBeatDeserializer implements Deserializer<HeartBeat> {
     public void configure(Map<String, ?> map, boolean bln) {    }
 
     @Override
-    public HeartBeat deserialize(String topic, byte[] heartbeat) {
-        
+    public Status deserialize(String topic, byte[] status) {
         try {
-            if (heartbeat == null) {
-                System.out.println("Null recieved at HeartBeatDeserializer.");
+            if (status == null) {
+                System.out.println("Null recieved in StatusDeserializer.");
                 return null;
             } else {
-                ByteBuffer buf = ByteBuffer.wrap(heartbeat);
+                ByteBuffer buf = ByteBuffer.wrap(status);
                 int deserializedCar_id = buf.getInt();
                 int deserializedTime = buf.getInt();
                 
@@ -30,10 +29,15 @@ public class HeartBeatDeserializer implements Deserializer<HeartBeat> {
                 buf.get(msg_idBytes);
                 String deserializedMsg_id = new String(msg_idBytes,encoding);
                 
-                return new HeartBeat(deserializedCar_id,deserializedTime,deserializedMsg_id);
+                int sizeOfStatus = buf.getInt();
+                byte[] statusBytes = new byte[sizeOfStatus];
+                buf.get(statusBytes);
+                String deserializedStatus = new String(statusBytes,encoding);
+                
+                return new Status(deserializedCar_id,deserializedTime,deserializedMsg_id,deserializedStatus);
             }
         } catch (Exception e) {
-            throw new SerializationException("Error deserializing byte[] to HeartBeat.");
+            throw new SerializationException("Error deserializing byte[] to Status.");
         }
     }
 

@@ -1,5 +1,6 @@
 package as.pa1.collectentity;
 
+import as.pa1.data.objets.Status;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,26 +27,32 @@ public class CollectEntitySTATUS {
             "loaclhost:9092,loacalhost:9093,localhost:9094";
     private BufferedReader in;
     
-    private Producer<Long, String> createProducer() {
+    private Producer<Long, Status> createProducer() {
         Properties props = new Properties();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ProducerConfig.CLIENT_ID_CONFIG, CLIENT_ID);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "as.pa1.serialization.StatusSerializer");
         props.put(ProducerConfig.ACKS_CONFIG, "all");
         props.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, 1);
         props.put("max.inflight.messages", 1);
         return new KafkaProducer<>(props);
     }
     
-    private void runProducer(Producer<Long, String> producer) {
+    private void runProducer() {
         long time = System.currentTimeMillis();
+        Producer<Long, Status> producer = createProducer();
         
         try {
             in = new BufferedReader(new FileReader(PATH));
             String line;
             long index = time;
+            
             while ((line = in.readLine()) != null) {
+                String[] lineArgs = line.split("\\|");
+                Status st = new Status(Integer.parseInt(lineArgs[0]),Integer.parseInt(lineArgs[1]),lineArgs[2],lineArgs[3]);
+                producer.send(new ProducerRecord<Long, Status>(TOPIC,index,st)).get();
+                /**
                 final ProducerRecord<Long, String> record = new ProducerRecord<>(TOPIC, index, line);
                 RecordMetadata metadata = producer.send(record).get();
                 
@@ -54,8 +61,8 @@ public class CollectEntitySTATUS {
                                 "meta(partition=%d offset=%d) time=%d\n",
                                 record.key(), record.value(),
                                 metadata.partition(), metadata.offset(), elapsedTime);
-                index++;
-                
+                **/
+                index++;    
             }
             in.close();
         } catch (FileNotFoundException ex) {
@@ -73,7 +80,7 @@ public class CollectEntitySTATUS {
     
     public static void main(String[] args) {
         CollectEntitySTATUS cestatus = new CollectEntitySTATUS();
-        cestatus.runProducer(cestatus.createProducer());
+        cestatus.runProducer();
     }
     
 }

@@ -8,34 +8,35 @@ import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.serialization.Serializer;
 
 public class HeartBeatSerializer implements Serializer<HeartBeat> {
+    
     private final String encoding = "UTF-8";
     
     @Override
     public void configure(Map<String, ?> map, boolean bln) {    }
 
     @Override
-    public byte[] serialize(String topic, HeartBeat data) {
+    public byte[] serialize(String topic, HeartBeat heartbeat) {
         int sizeOfMsg_id;
         byte[] serializedMsg_id;
         
         try {
-            if (data == null) {
-                System.out.println("Null recieved in HeartBeatSerializer!");
+            if (heartbeat == null) {
+                System.out.println("Null recieved in HeartBeatSerializer.");
                 return null;
             } else {
-                serializedMsg_id = data.getMsg_id().getBytes(encoding);
+                serializedMsg_id = heartbeat.getMsg_id().getBytes(encoding);
                 sizeOfMsg_id = serializedMsg_id.length;
                 
                 ByteBuffer buf = ByteBuffer.allocate(4+4+4+sizeOfMsg_id);
-                buf.putInt(data.getCar_id());
-                buf.putInt(data.getTime());
+                buf.putInt(heartbeat.getCar_id());
+                buf.putInt(heartbeat.getTime());
                 buf.putInt(sizeOfMsg_id);
                 buf.put(serializedMsg_id);
                 
                 return buf.array();
             }            
-        } catch (UnsupportedEncodingException e) {
-            throw new SerializationException("Error when serializing HeartBeat to byte[]!");
+        } catch (Exception e) {
+            throw new SerializationException("Error serializing HeartBeat to byte[].");
         }
     }
 
