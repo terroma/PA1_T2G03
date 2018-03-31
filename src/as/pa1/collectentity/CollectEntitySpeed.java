@@ -18,7 +18,7 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.LongSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 
-public class CollectEntitySPEED {
+public class CollectEntitySpeed {
     
     private static final String PATH = new File("").getAbsolutePath().concat("/src/as/pa1/data/SPEED.txt");
     private static final String CLIENT_ID = "CollectEntitySPEED";
@@ -67,13 +67,13 @@ public class CollectEntitySPEED {
             }
             in.close();
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(CollectEntityHB.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CollectEntityHeartBeat.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(CollectEntityHB.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CollectEntityHeartBeat.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
-            Logger.getLogger(CollectEntitySPEED.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CollectEntitySpeed.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ExecutionException ex) {
-            Logger.getLogger(CollectEntitySPEED.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CollectEntitySpeed.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             producer.flush();
             producer.close();
@@ -82,7 +82,7 @@ public class CollectEntitySPEED {
     }
     
     public static void main(String[] args) {
-        CollectEntitySPEED cespeed = new CollectEntitySPEED();
+        CollectEntitySpeed cespeed = new CollectEntitySpeed();
         cespeed.runProducer();
     }
     

@@ -19,9 +19,9 @@ import org.apache.kafka.common.serialization.LongDeserializer;
 import org.apache.kafka.common.serialization.LongSerializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
-public class DigestionEntityHB {
+public class DigestionEntityHeartBeat {
     
-    private String car_reg = "XX-YY-";
+    private String reg = "XX-YY-";
     private final static String ENRICHTOPIC = "EnrichTopic_1";
     private final static String ENRICHEDTOPIC = "EnrichedTopic_1";
     private final static String CLIENT_ID = "DigestionEntityHB";
@@ -50,7 +50,7 @@ public class DigestionEntityHB {
         return new KafkaProducer<>(props);
     }
     
-    private void runConsumer() throws InterruptedException {
+    private void runDigestionEntityHeartBeat() throws InterruptedException {
         long time = System.currentTimeMillis();
         Consumer<Long, HeartBeat> consumer = createConsumer();
         Producer<Long, EnrichedHeartBeat> producer = createProducer();
@@ -60,21 +60,24 @@ public class DigestionEntityHB {
         try {
             while (true) {
                 ConsumerRecords<Long, HeartBeat> records = consumer.poll(100);
-                for (ConsumerRecord<Long, HeartBeat> record : records) {
-                    if (record.value() == null) {
-                        System.out.println("HeartBeat recieved as null.");
-                    } else {
-                        EnrichedHeartBeat enrichedHB = new EnrichedHeartBeat(
-                                record.value().getCar_id(),
-                                record.value().getTime(),
-                                car_reg.concat(String.valueOf(record.value().getCar_id())),
-                                record.value().getMsg_id()
-                        );
-                        producer.send(new ProducerRecord<Long, EnrichedHeartBeat>(ENRICHEDTOPIC,time,enrichedHB)).get();
+                if (records.count() != 0) {
+                    for (ConsumerRecord<Long, HeartBeat> record : records) {
+                        if (record.value() == null) {
+                            System.out.println("HeartBeat recieved as null.");
+                        } else {
+                            String car_reg = reg+String.format("%02d", record.value().getCar_id());
+                            System.out.println(car_reg);
+                            EnrichedHeartBeat enrichedHB = new EnrichedHeartBeat(
+                                    record.value().getCar_id(),
+                                    record.value().getTime(),
+                                    car_reg,
+                                    record.value().getMsg_id()
+                            );
+                            producer.send(new ProducerRecord<Long, EnrichedHeartBeat>(ENRICHEDTOPIC,time,enrichedHB)).get();
+                        }
+                        time++;
                     }
-                    time++;
                 }
-                System.out.println("All records consumed and enriched!!!");
                 /**
                 final ConsumerRecords<Long, String> consumerRecords = consumer.poll(1000);
 
@@ -104,11 +107,11 @@ public class DigestionEntityHB {
     }
     
     public static void main(String[] args) {
-        DigestionEntityHB dhb = new DigestionEntityHB();
+        DigestionEntityHeartBeat dhb = new DigestionEntityHeartBeat();
         try {
-            dhb.runConsumer();
+            dhb.runDigestionEntityHeartBeat();
         } catch (InterruptedException ex) {
-            Logger.getLogger(DigestionEntityHB.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DigestionEntityHeartBeat.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
