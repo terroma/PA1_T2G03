@@ -2,6 +2,8 @@ package as.pa1.digestionentity;
 
 import as.pa1.data.objets.EnrichedSpeed;
 import as.pa1.data.objets.Speed;
+import as.pa1.serialization.EnrichedSpeedSerializer;
+import as.pa1.serialization.SpeedDeserializer;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Properties;
@@ -34,7 +36,7 @@ public class DigestionEntitySpeed {
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, CLIENT_ID);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "as.pa1.serialization.SpeedDeserializer");
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, SpeedDeserializer.class.getName());
         Consumer<Long, Speed> consumer = new KafkaConsumer<>(props);
         //consumer.subscribe(Collections.singleton(ENRICHTOPIC));
         consumer.subscribe(Arrays.asList(ENRICHTOPIC));
@@ -46,7 +48,7 @@ public class DigestionEntitySpeed {
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ProducerConfig.CLIENT_ID_CONFIG, CLIENT_ID);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "as.pa1.serialization.EnrichedSpeedSerializer");
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, EnrichedSpeedSerializer.class.getName());
         props.put(ProducerConfig.ACKS_CONFIG, "all");       
         return new KafkaProducer<>(props);
     }

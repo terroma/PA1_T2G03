@@ -2,6 +2,8 @@ package as.pa1.digestionentity;
 
 import as.pa1.data.objets.EnrichedStatus;
 import as.pa1.data.objets.Status;
+import as.pa1.serialization.EnrichedStatusSerializer;
+import as.pa1.serialization.StatusDeserializer;
 import java.util.Arrays;
 import java.util.Properties;
 import org.apache.kafka.clients.consumer.Consumer;
@@ -29,7 +31,7 @@ public class DigestionEntityStatus {
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, CLIENT_ID);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "as.pa1.serialization.StatusDeserializer");
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StatusDeserializer.class.getName());
         Consumer<Long, Status> consumer = new KafkaConsumer<>(props);
         //consumer.subscribe(Collections.singleton(ENRICHTOPIC));
         consumer.subscribe(Arrays.asList(ENRICHTOPIC));
@@ -41,7 +43,7 @@ public class DigestionEntityStatus {
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ProducerConfig.CLIENT_ID_CONFIG, CLIENT_ID);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "as.pa1.serialization.EnrichedStatusSerializer");
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, EnrichedStatusSerializer.class.getName());
         props.put(ProducerConfig.ACKS_CONFIG, "all");
         return new KafkaProducer<>(props);
     }

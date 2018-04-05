@@ -1,6 +1,7 @@
 package as.pa1.collectentity;
 
 import as.pa1.data.objets.HeartBeat;
+import as.pa1.serialization.HeartBeatSerializer;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,7 +32,7 @@ public class CollectEntityHeartBeat {
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ProducerConfig.CLIENT_ID_CONFIG, CLIENT_ID);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "as.pa1.serialization.HeartBeatSerializer");
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, HeartBeatSerializer.class.getName());
         props.put(ProducerConfig.ACKS_CONFIG, "0");
         return new KafkaProducer<>(props);
     }

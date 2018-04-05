@@ -1,6 +1,7 @@
 package as.pa1.collectentity;
 
 import as.pa1.data.objets.Status;
+import as.pa1.serialization.StatusSerializer;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,7 +33,7 @@ public class CollectEntityStatus {
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ProducerConfig.CLIENT_ID_CONFIG, CLIENT_ID);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "as.pa1.serialization.StatusSerializer");
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StatusSerializer.class.getName());
         props.put(ProducerConfig.ACKS_CONFIG, "all");
         props.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, 1);
         props.put("max.inflight.messages", 1);

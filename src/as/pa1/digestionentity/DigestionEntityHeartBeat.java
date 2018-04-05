@@ -2,6 +2,8 @@ package as.pa1.digestionentity;
 
 import as.pa1.data.objets.EnrichedHeartBeat;
 import as.pa1.data.objets.HeartBeat;
+import as.pa1.serialization.EnrichedHeartBeatSerializer;
+import as.pa1.serialization.HeartBeatDeserializer;
 import java.util.Collections;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -33,7 +35,7 @@ public class DigestionEntityHeartBeat {
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, CLIENT_ID);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "as.pa1.serialization.HeartBeatDeserializer");
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, HeartBeatDeserializer.class.getName());
 //      props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 100);
         Consumer<Long, HeartBeat> consumer = new KafkaConsumer<>(props);
         consumer.subscribe(Collections.singleton(ENRICHTOPIC));
@@ -45,7 +47,7 @@ public class DigestionEntityHeartBeat {
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ProducerConfig.CLIENT_ID_CONFIG, CLIENT_ID);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "as.pa1.serialization.EnrichedHeartBeatSerializer");
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, EnrichedHeartBeatSerializer.class.getName());
         props.put(ProducerConfig.ACKS_CONFIG,"0");
         return new KafkaProducer<>(props);
     }

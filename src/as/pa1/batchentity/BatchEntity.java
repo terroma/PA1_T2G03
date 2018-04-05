@@ -3,6 +3,9 @@ package as.pa1.batchentity;
 import as.pa1.data.objets.EnrichedHeartBeat;
 import as.pa1.data.objets.EnrichedSpeed;
 import as.pa1.data.objets.EnrichedStatus;
+import as.pa1.serialization.EnrichedHeartBeatDeserializer;
+import as.pa1.serialization.EnrichedSpeedDeserializer;
+import as.pa1.serialization.EnrichedStatusDeserializer;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,7 +35,7 @@ public class BatchEntity {
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, CLIENT_ID);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "as.pa1.serialization.EnrichedHeartBeatDeserializer");
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, EnrichedHeartBeatDeserializer.class.getName());
         Consumer<Long, EnrichedHeartBeat> consumer = new KafkaConsumer<>(props);
         consumer.subscribe(Arrays.asList(TOPICS[0]));
         return consumer;
@@ -43,7 +46,7 @@ public class BatchEntity {
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, CLIENT_ID);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "as.pa1.serialization.EnrichedSpeedDeserializer");
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, EnrichedSpeedDeserializer.class.getName());
         Consumer<Long, EnrichedSpeed> consumer = new KafkaConsumer<>(props);
         consumer.subscribe(Arrays.asList(TOPICS[1]));
         return consumer;
@@ -54,7 +57,7 @@ public class BatchEntity {
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, CLIENT_ID);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "as.pa1.serialization.EnrichedStatusDeserializer");
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, EnrichedStatusDeserializer.class.getName());
         Consumer<Long, EnrichedStatus> consumer = new KafkaConsumer<>(props);
         consumer.subscribe(Arrays.asList(TOPICS[2]));
         return consumer;
