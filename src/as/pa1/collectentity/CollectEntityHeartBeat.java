@@ -12,7 +12,6 @@ import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFrame;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -60,6 +59,8 @@ public class CollectEntityHeartBeat {
                 String[] lineArgs = line.split("\\|");
                 HeartBeat hb = new HeartBeat(Integer.parseInt(lineArgs[0]),Integer.parseInt(lineArgs[1]),lineArgs[2]);
                 producer.send(new ProducerRecord<Long, HeartBeat>(TOPIC,time,hb)).get();
+                // sleep for showing purposes
+                //Thread.sleep(1000);
                 guiFrame.updateHeartBeatText(line);
                 /**
                 final ProducerRecord<Long, String> record = new ProducerRecord<>(TOPIC,line);
