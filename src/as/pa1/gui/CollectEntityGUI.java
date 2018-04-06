@@ -8,9 +8,12 @@ package as.pa1.gui;
 import as.pa1.collectentity.CollectEntityHeartBeat;
 import java.awt.Color;
 import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
+import javax.swing.Timer;
 
 /**
  *
@@ -21,6 +24,7 @@ public class CollectEntityGUI extends javax.swing.JFrame {
     private final Color FOREGROUNDCOLOR = new java.awt.Color(187,187,187);
     private final Color TEXTAREA_BACKGROUND = new java.awt.Color(69,73,79);
     private static CollectEntityHeartBeat ceHB;
+    private Timer timer;
     
     /**
      * Creates new form CollectEntityGUI
@@ -142,10 +146,20 @@ public class CollectEntityGUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        ceHB.runProducer();
+        new SwingWorker<CollectEntityHeartBeat, Object> () {
+            @Override
+            protected CollectEntityHeartBeat doInBackground() throws Exception {
+                //timer = new Timer(100, jButton1.getActionListeners()[0]);
+                //timer.setInitialDelay(1900);
+                //timer.start();
+                ceHB.runProducer();
+                return ceHB;
+            }
+        }.execute();
+                
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    public void updateHeartBeatText(String line) throws InterruptedException, InvocationTargetException {
+    public void updateHeartBeatText(String line) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {

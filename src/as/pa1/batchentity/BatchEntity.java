@@ -90,7 +90,7 @@ public class BatchEntity {
                             out.newLine();
                         }
                     }
-                    out.flush();
+                    //out.flush();
                     out.close();
                 }
                 ConsumerRecords<Long, EnrichedSpeed> speedRecords = speedConsumer.poll(100);
@@ -113,7 +113,7 @@ public class BatchEntity {
                             out.newLine();
                         }
                     }
-                    out.flush();
+                    //out.flush();
                     out.close();
                 }
                 ConsumerRecords<Long, EnrichedStatus> statusRecords = statusConsumer.poll(100);
@@ -132,7 +132,7 @@ public class BatchEntity {
                             System.out.println("Writing EnrichedStatus: " + line);
                         }  
                     }
-                    out.flush();
+                    //out.flush();
                     out.close();
                 }
             }
