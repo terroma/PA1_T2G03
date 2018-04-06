@@ -1,6 +1,7 @@
 package as.pa1.collectentity;
 
 import as.pa1.data.objets.HeartBeat;
+import as.pa1.gui.CollectEntityGUI;
 import as.pa1.serialization.HeartBeatSerializer;
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,6 +12,7 @@ import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -26,6 +28,15 @@ public class CollectEntityHeartBeat {
     private static final String BOOTSTRAP_SERVERS = 
             "loaclhost:9092,loacalhost:9093,localhost:9094";
     private BufferedReader in;
+    private CollectEntityGUI guiFrame;
+    
+    public CollectEntityHeartBeat() {
+        
+    }
+    
+    public CollectEntityHeartBeat(CollectEntityGUI guiFrame) {
+        this.guiFrame = guiFrame;
+    }
     
     private Producer<Long, HeartBeat> createProducer() {
         Properties props = new Properties();
@@ -37,7 +48,7 @@ public class CollectEntityHeartBeat {
         return new KafkaProducer<>(props);
     }
     
-    private void runProducer() {
+    public void runProducer() {
         long time = System.currentTimeMillis();
         Producer<Long, HeartBeat> producer = createProducer();
         
@@ -49,6 +60,7 @@ public class CollectEntityHeartBeat {
                 String[] lineArgs = line.split("\\|");
                 HeartBeat hb = new HeartBeat(Integer.parseInt(lineArgs[0]),Integer.parseInt(lineArgs[1]),lineArgs[2]);
                 producer.send(new ProducerRecord<Long, HeartBeat>(TOPIC,time,hb)).get();
+                guiFrame.updateHeartBeatText(line);
                 /**
                 final ProducerRecord<Long, String> record = new ProducerRecord<>(TOPIC,line);
                 producer.send(record);
