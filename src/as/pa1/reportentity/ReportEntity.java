@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package as.pa1.reportentity;
 
 import as.pa1.data.objets.EnrichedHeartBeat;
@@ -11,7 +6,6 @@ import as.pa1.data.objets.EnrichedStatus;
 import as.pa1.serialization.EnrichedHeartBeatDeserializer;
 import as.pa1.serialization.EnrichedSpeedDeserializer;
 import as.pa1.serialization.EnrichedStatusDeserializer;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -23,10 +17,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.LongSerializer;
 
-/**
- *
- * @author terroma
- */
 public class ReportEntity {
     private static final String CLIENT_ID = "ReportEntity";
     private static final String[] TOPICS = {"EnrichedTopic_1","EnrichedTopic_2","EnrichedTopic_3"};
