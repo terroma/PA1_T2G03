@@ -17,7 +17,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.LongSerializer;
 
-public class DigestionEntityStatus {
+public class DigestionEntityStatus implements DigestionEntity<Status, EnrichedStatus> {
     
     private String reg = "XX-YY-";
     private final static String ENRICHTOPIC = "EnrichTopic_3";
@@ -26,7 +26,8 @@ public class DigestionEntityStatus {
     private final static String BOOTSTRAP_SERVERS =
             "localhost:9092, localhost:9093, localhost:9094";
     
-    private Consumer<Long, Status> createConsumer() {
+    @Override
+    public Consumer<Long, Status> createConsumer() {
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, CLIENT_ID);
@@ -38,7 +39,8 @@ public class DigestionEntityStatus {
         return consumer;
     }
     
-    private Producer<Long, EnrichedStatus> createProducer() {
+    @Override
+    public Producer<Long, EnrichedStatus> createProducer() {
         Properties props = new Properties();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ProducerConfig.CLIENT_ID_CONFIG, CLIENT_ID);
@@ -48,7 +50,8 @@ public class DigestionEntityStatus {
         return new KafkaProducer<>(props);
     }
     
-    private void runDigestionEntityStatus() {
+    @Override
+    public void runDigestionEntity() {
         long time = System.currentTimeMillis();
         Consumer<Long, Status> consumer = createConsumer();
         Producer<Long, EnrichedStatus> producer = createProducer();
@@ -87,6 +90,6 @@ public class DigestionEntityStatus {
     
     public static void main(String[] args) {
         DigestionEntityStatus des = new DigestionEntityStatus();
-        des.runDigestionEntityStatus();
+        des.runDigestionEntity();
     }
 }

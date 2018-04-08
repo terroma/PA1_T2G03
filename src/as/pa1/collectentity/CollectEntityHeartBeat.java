@@ -19,7 +19,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.LongSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 
-public class CollectEntityHeartBeat {
+public class CollectEntityHeartBeat implements CollectEntity<HeartBeat> {
     
     private static final String PATH = new File("").getAbsolutePath().concat("/src/as/pa1/data/HB.txt");
     private static final String CLIENT_ID = "CollectEntityHB";
@@ -37,7 +37,8 @@ public class CollectEntityHeartBeat {
         this.guiFrame = guiFrame;
     }
     
-    private Producer<Long, HeartBeat> createProducer() {
+    @Override
+    public Producer<Long, HeartBeat> createProducer() {
         Properties props = new Properties();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ProducerConfig.CLIENT_ID_CONFIG, CLIENT_ID);
@@ -47,10 +48,11 @@ public class CollectEntityHeartBeat {
         return new KafkaProducer<>(props);
     }
     
-    public void runProducer() {
+    @Override
+    public void runCollectEntity() {
         long time = System.currentTimeMillis();
         Producer<Long, HeartBeat> producer = createProducer();
-        
+        System.out.println(producer.toString());
         try {
             in = new BufferedReader(new FileReader(PATH));
             String line;
@@ -59,26 +61,21 @@ public class CollectEntityHeartBeat {
                 String[] lineArgs = line.split("\\|");
                 HeartBeat hb = new HeartBeat(Integer.parseInt(lineArgs[0]),Integer.parseInt(lineArgs[1]),lineArgs[2]);
                 producer.send(new ProducerRecord<Long, HeartBeat>(TOPIC,time,hb)).get();
-                // sleep for showing purposes
-                //Thread.sleep(1000);
-                guiFrame.updateHeartBeatText(line);
-                /**
-                final ProducerRecord<Long, String> record = new ProducerRecord<>(TOPIC,line);
-                producer.send(record);
-                long elapsedTime = System.currentTimeMillis() - time;
-                System.out.printf("sent record(key=%s value=%s) time=%d\n",
-                                    record.key(), record.value(), elapsedTime);
-                **/
+                if (guiFrame != null) {
+                    // sleep for showing purposes
+                    //Thread.sleep(1000);
+                    guiFrame.updateHeartBeatText(line);
+                }
             }
             in.close();
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(CollectEntityHeartBeat.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CollectEntityHeartBeat.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } catch (IOException ex) {
-            Logger.getLogger(CollectEntityHeartBeat.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CollectEntityHeartBeat.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } catch (InterruptedException ex) {
-            Logger.getLogger(CollectEntityHeartBeat.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CollectEntityHeartBeat.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } catch (ExecutionException ex) {
-            Logger.getLogger(CollectEntityHeartBeat.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CollectEntityHeartBeat.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
             producer.flush();
             producer.close();
@@ -88,7 +85,7 @@ public class CollectEntityHeartBeat {
     
     public static void main(String[] args) {
         CollectEntityHeartBeat cehb = new CollectEntityHeartBeat();
-        cehb.runProducer();
+        cehb.runCollectEntity();
     }
     
 }

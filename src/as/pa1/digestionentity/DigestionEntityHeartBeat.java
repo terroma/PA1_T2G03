@@ -6,6 +6,7 @@ import as.pa1.serialization.EnrichedHeartBeatSerializer;
 import as.pa1.serialization.HeartBeatDeserializer;
 import java.util.Collections;
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -21,7 +22,7 @@ import org.apache.kafka.common.serialization.LongDeserializer;
 import org.apache.kafka.common.serialization.LongSerializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
-public class DigestionEntityHeartBeat {
+public class DigestionEntityHeartBeat implements DigestionEntity<HeartBeat, EnrichedHeartBeat> {
     
     private String reg = "XX-YY-";
     private final static String ENRICHTOPIC = "EnrichTopic_1";
@@ -30,7 +31,8 @@ public class DigestionEntityHeartBeat {
     private final static String BOOTSTRAP_SERVERS =
             "localhost:9092, localhost:9093, localhost:9094";
     
-    private Consumer<Long, HeartBeat> createConsumer() {
+    @Override
+    public Consumer<Long, HeartBeat> createConsumer() {
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, CLIENT_ID);
@@ -42,7 +44,8 @@ public class DigestionEntityHeartBeat {
         return consumer;
     }
     
-    private Producer<Long, EnrichedHeartBeat> createProducer() {
+    @Override
+    public Producer<Long, EnrichedHeartBeat> createProducer() {
         Properties props = new Properties();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ProducerConfig.CLIENT_ID_CONFIG, CLIENT_ID);
@@ -52,7 +55,8 @@ public class DigestionEntityHeartBeat {
         return new KafkaProducer<>(props);
     }
     
-    private void runDigestionEntityHeartBeat() throws InterruptedException {
+    @Override
+    public void runDigestionEntity() {
         long time = System.currentTimeMillis();
         Consumer<Long, HeartBeat> consumer = createConsumer();
         Producer<Long, EnrichedHeartBeat> producer = createProducer();
@@ -98,7 +102,7 @@ public class DigestionEntityHeartBeat {
                 consumer.commitAsync();
                 **/
             }
-        } catch (Exception ex) {
+        } catch (InterruptedException | ExecutionException ex) {
             ex.printStackTrace();
         } finally {
             //consumer.commitSync();
@@ -110,10 +114,6 @@ public class DigestionEntityHeartBeat {
     
     public static void main(String[] args) {
         DigestionEntityHeartBeat dhb = new DigestionEntityHeartBeat();
-        try {
-            dhb.runDigestionEntityHeartBeat();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(DigestionEntityHeartBeat.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        dhb.runDigestionEntity();
     }
 }

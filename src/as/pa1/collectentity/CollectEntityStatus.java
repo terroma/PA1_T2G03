@@ -19,7 +19,7 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.LongSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 
-public class CollectEntityStatus {
+public class CollectEntityStatus implements CollectEntity<Status> {
     
     private static final String PATH = new File("").getAbsolutePath().concat("/src/as/pa1/data/STATUS.txt");
     private static final String CLIENT_ID = "CollectEntitySTATUS";
@@ -28,7 +28,8 @@ public class CollectEntityStatus {
             "loaclhost:9092,loacalhost:9093,localhost:9094";
     private BufferedReader in;
     
-    private Producer<Long, Status> createProducer() {
+    @Override
+    public Producer<Long, Status> createProducer() {
         Properties props = new Properties();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ProducerConfig.CLIENT_ID_CONFIG, CLIENT_ID);
@@ -40,7 +41,8 @@ public class CollectEntityStatus {
         return new KafkaProducer<>(props);
     }
     
-    private void runProducer() {
+    @Override
+    public void runCollectEntity() {
         long time = System.currentTimeMillis();
         Producer<Long, Status> producer = createProducer();
         
@@ -67,11 +69,13 @@ public class CollectEntityStatus {
             }
             in.close();
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(CollectEntityHeartBeat.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CollectEntityStatus.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } catch (IOException ex) {
-            Logger.getLogger(CollectEntityHeartBeat.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InterruptedException | ExecutionException ex) {
-            Logger.getLogger(CollectEntitySpeed.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CollectEntityStatus.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(CollectEntityStatus.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+        } catch (ExecutionException ex) {
+            Logger.getLogger(CollectEntityStatus.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
             producer.flush();
             producer.close();
@@ -81,7 +85,7 @@ public class CollectEntityStatus {
     
     public static void main(String[] args) {
         CollectEntityStatus cestatus = new CollectEntityStatus();
-        cestatus.runProducer();
+        cestatus.runCollectEntity();
     }
     
 }

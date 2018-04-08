@@ -19,7 +19,7 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.LongSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 
-public class CollectEntitySpeed {
+public class CollectEntitySpeed implements CollectEntity<Speed> {
     
     private static final String PATH = new File("").getAbsolutePath().concat("/src/as/pa1/data/SPEED.txt");
     private static final String CLIENT_ID = "CollectEntitySPEED";
@@ -28,7 +28,8 @@ public class CollectEntitySpeed {
             "loaclhost:9092,loacalhost:9093,localhost:9094";
     private BufferedReader in;
     
-    private Producer<Long, Speed> createProducer() {
+    @Override
+    public Producer<Long, Speed> createProducer() {
         Properties props = new Properties();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ProducerConfig.CLIENT_ID_CONFIG, CLIENT_ID);
@@ -40,7 +41,8 @@ public class CollectEntitySpeed {
         return new KafkaProducer<>(props);
     }
     
-    private void runProducer() {
+    @Override
+    public void runCollectEntity() {
         long time = System.currentTimeMillis();
         Producer<Long, Speed> producer = createProducer();
         
@@ -68,13 +70,13 @@ public class CollectEntitySpeed {
             }
             in.close();
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(CollectEntityHeartBeat.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CollectEntitySpeed.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } catch (IOException ex) {
-            Logger.getLogger(CollectEntityHeartBeat.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CollectEntitySpeed.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } catch (InterruptedException ex) {
-            Logger.getLogger(CollectEntitySpeed.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CollectEntitySpeed.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } catch (ExecutionException ex) {
-            Logger.getLogger(CollectEntitySpeed.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CollectEntitySpeed.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
             producer.flush();
             producer.close();
@@ -84,7 +86,7 @@ public class CollectEntitySpeed {
     
     public static void main(String[] args) {
         CollectEntitySpeed cespeed = new CollectEntitySpeed();
-        cespeed.runProducer();
+        cespeed.runCollectEntity();
     }
     
 }

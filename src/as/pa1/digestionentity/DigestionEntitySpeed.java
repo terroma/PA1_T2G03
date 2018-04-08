@@ -21,7 +21,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.LongDeserializer;
 import org.apache.kafka.common.serialization.LongSerializer;
 
-public class DigestionEntitySpeed {
+public class DigestionEntitySpeed implements DigestionEntity<Speed, EnrichedSpeed> {
     
     private String reg = "XX-YY-";
     private final static int MAX_SPEED = 100;
@@ -31,7 +31,8 @@ public class DigestionEntitySpeed {
     private final static String BOOTSTRAP_SERVERS =
             "localhost:9092, localhost:9093, localhost:9094";
     
-    private Consumer<Long, Speed> createConsumer() {
+    @Override
+    public Consumer<Long, Speed> createConsumer() {
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, CLIENT_ID);
@@ -43,7 +44,8 @@ public class DigestionEntitySpeed {
         return consumer;
     }
     
-    private Producer<Long, EnrichedSpeed> createProducer() {
+    @Override
+    public Producer<Long, EnrichedSpeed> createProducer() {
         Properties props = new Properties();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ProducerConfig.CLIENT_ID_CONFIG, CLIENT_ID);
@@ -53,7 +55,8 @@ public class DigestionEntitySpeed {
         return new KafkaProducer<>(props);
     }
     
-    private void runDigestionEntitySpeed() throws InterruptedException {
+    @Override
+    public void runDigestionEntity() throws InterruptedException {
         long time = System.currentTimeMillis();
         Consumer<Long, Speed> consumer = createConsumer();
         Producer<Long, EnrichedSpeed> producer = createProducer();
@@ -95,7 +98,7 @@ public class DigestionEntitySpeed {
     public static void main(String[] args) {
         DigestionEntitySpeed des = new DigestionEntitySpeed();
         try {
-            des.runDigestionEntitySpeed();
+            des.runDigestionEntity();
         } catch (InterruptedException ex) {
             Logger.getLogger(DigestionEntitySpeed.class.getName()).log(Level.SEVERE, null, ex);
         }

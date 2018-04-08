@@ -149,10 +149,7 @@ public class CollectEntityGUI extends javax.swing.JFrame {
         new SwingWorker<CollectEntityHeartBeat, Object> () {
             @Override
             protected CollectEntityHeartBeat doInBackground() throws Exception {
-                //timer = new Timer(100, jButton1.getActionListeners()[0]);
-                //timer.setInitialDelay(1900);
-                //timer.start();
-                ceHB.runProducer();
+                ceHB.runCollectEntity();
                 return ceHB;
             }
         }.execute();
