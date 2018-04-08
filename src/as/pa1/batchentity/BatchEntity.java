@@ -88,16 +88,12 @@ public class BatchEntity {
                     out = new BufferedWriter(new FileWriter(PATH,true));
                     for (ConsumerRecord<Long, EnrichedHeartBeat> heartbeatRecord : heartbeatRecords) {
                         if (heartbeatRecord.value() != null ) {
-                            EnrichedHeartBeat enrichedHeartBeat = heartbeatRecord.value();
-                            line = String.join("|",
-                                    String.format("%02d",enrichedHeartBeat.getCar_id()),
-                                    String.valueOf(enrichedHeartBeat.getTime()),
-                                    enrichedHeartBeat.getCar_reg(),
-                                    enrichedHeartBeat.getMsg_id()
-                                    );
+                            line = heartbeatRecord.value().toString();
                             System.out.println("Writing EnrichedHeartBeat: " + line);
                             out.write(line);
                             out.newLine();
+                            if (guiFrame != null)
+                                guiFrame.updateBatchEntityText(line);
                         }
                     }
                     //out.flush();
@@ -108,19 +104,12 @@ public class BatchEntity {
                     out = new BufferedWriter(new FileWriter(PATH,true));
                     for (ConsumerRecord<Long, EnrichedSpeed> speedRecord : speedRecords) {
                         if (speedRecord.value() != null) {
-                            EnrichedSpeed enrichedSpeed = speedRecord.value();
-                            line = String.join("|",
-                                    String.format("%02d", enrichedSpeed.getCar_id()),
-                                    String.valueOf(enrichedSpeed.getTime()),
-                                    enrichedSpeed.getCar_reg(),
-                                    enrichedSpeed.getMsg_id(),
-                                    String.valueOf(enrichedSpeed.getSpeed()),
-                                    String.valueOf(enrichedSpeed.getLocalization()),
-                                    String.valueOf(enrichedSpeed.getMax_speed())
-                                    );
+                            line = speedRecord.value().toString();
                             System.out.println("Writing EnrichedSpeed: " + line);
                             out.write(line);
                             out.newLine();
+                            if (guiFrame != null)
+                                guiFrame.updateBatchEntityText(line);
                         }
                     }
                     //out.flush();
@@ -131,15 +120,12 @@ public class BatchEntity {
                     out = new BufferedWriter(new FileWriter(PATH,true));
                     for (ConsumerRecord<Long, EnrichedStatus> statusRecord: statusRecords) {
                         if (statusRecord.value() != null) {
-                            EnrichedStatus enrichedStatus = statusRecord.value();
-                            line = String.join("|",
-                                    String.format("%02d", enrichedStatus.getCar_id()),
-                                    String.valueOf(enrichedStatus.getTime()),
-                                    enrichedStatus.getCar_reg(),
-                                    enrichedStatus.getMsg_id(),
-                                    enrichedStatus.getCar_status()
-                                    );
+                            line = statusRecord.toString();
                             System.out.println("Writing EnrichedStatus: " + line);
+                            out.write(line);
+                            out.newLine();
+                            if (guiFrame != null)
+                                guiFrame.updateBatchEntityText(line);
                         }  
                     }
                     //out.flush();
@@ -147,9 +133,9 @@ public class BatchEntity {
                 }
             }
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(BatchEntity.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(BatchEntity.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } catch (IOException ex) {
-            Logger.getLogger(BatchEntity.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(BatchEntity.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
             heartbeatConsumer.close();
             speedConsumer.close();
