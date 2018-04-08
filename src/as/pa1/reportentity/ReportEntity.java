@@ -3,6 +3,7 @@ package as.pa1.reportentity;
 import as.pa1.data.objets.EnrichedHeartBeat;
 import as.pa1.data.objets.EnrichedSpeed;
 import as.pa1.data.objets.EnrichedStatus;
+import as.pa1.gui.ReportEntityGUI;
 import as.pa1.serialization.EnrichedHeartBeatDeserializer;
 import as.pa1.serialization.EnrichedSpeedDeserializer;
 import as.pa1.serialization.EnrichedStatusDeserializer;
@@ -22,6 +23,15 @@ public class ReportEntity {
     private static final String[] TOPICS = {"EnrichedTopic_1","EnrichedTopic_2","EnrichedTopic_3"};
     private static final String BOOTSTRAP_SERVERS = "localhost:9092,localhost:9093,localhost:9094";
     private ReportEntityDBConnection dbConnection;
+    private ReportEntityGUI guiFrame;
+    
+    public ReportEntity() {
+        
+    }
+    
+    public ReportEntity(ReportEntityGUI guiFrame) {
+        this.guiFrame = guiFrame;
+    }
     
     private Consumer<Long, EnrichedHeartBeat> createHeartBeatConsumer() {
         Properties props = new Properties();
@@ -56,7 +66,7 @@ public class ReportEntity {
         return consumer;
     }
     
-    private void runReportEntity() {
+    public void runReportEntity() {
         long time = System.currentTimeMillis();
         final int batchSize = 1000;
         int noRecordsCount = 0;

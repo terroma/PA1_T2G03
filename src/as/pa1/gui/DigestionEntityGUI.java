@@ -76,30 +76,35 @@ public class DigestionEntityGUI extends javax.swing.JFrame {
 
         jLabel2.setText("HeartBeat Enriched Message produced");
 
+        jTextArea2.setEditable(false);
         jTextArea2.setColumns(20);
         jTextArea2.setRows(5);
         jScrollPane2.setViewportView(jTextArea2);
 
         jLabel3.setText("Speed Message consumed");
 
+        jTextArea3.setEditable(false);
         jTextArea3.setColumns(20);
         jTextArea3.setRows(5);
         jScrollPane3.setViewportView(jTextArea3);
 
         jLabel4.setText("Speed Enriched Message produced");
 
+        jTextArea4.setEditable(false);
         jTextArea4.setColumns(20);
         jTextArea4.setRows(5);
         jScrollPane4.setViewportView(jTextArea4);
 
         jLabel5.setText("Status Message consumed");
 
+        jTextArea5.setEditable(false);
         jTextArea5.setColumns(20);
         jTextArea5.setRows(5);
         jScrollPane5.setViewportView(jTextArea5);
 
         jLabel6.setText("Status Enriched Message produced");
 
+        jTextArea6.setEditable(false);
         jTextArea6.setColumns(20);
         jTextArea6.setRows(5);
         jScrollPane6.setViewportView(jTextArea6);

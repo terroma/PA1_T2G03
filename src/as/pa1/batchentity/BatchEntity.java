@@ -3,6 +3,7 @@ package as.pa1.batchentity;
 import as.pa1.data.objets.EnrichedHeartBeat;
 import as.pa1.data.objets.EnrichedSpeed;
 import as.pa1.data.objets.EnrichedStatus;
+import as.pa1.gui.BatchEntityGUI;
 import as.pa1.serialization.EnrichedHeartBeatDeserializer;
 import as.pa1.serialization.EnrichedSpeedDeserializer;
 import as.pa1.serialization.EnrichedStatusDeserializer;
@@ -29,6 +30,15 @@ public class BatchEntity {
     private static final String BOOTSTRAP_SERVERS = 
             "loaclhost:9092,loacalhost:9093,localhost:9094";
     private BufferedWriter out;
+    private BatchEntityGUI guiFrame;
+    
+    public BatchEntity() {
+        
+    }
+    
+    public BatchEntity(BatchEntityGUI guiFrame) {
+        this.guiFrame = guiFrame;
+    }
     
     private Consumer<Long, EnrichedHeartBeat> createHeartBeatConsumer() {
         Properties props = new Properties();
@@ -63,7 +73,7 @@ public class BatchEntity {
         return consumer;
     }
     //TODO try better implementation
-    private void runBatchEntity() {
+    public void runBatchEntity() {
         long time = System.currentTimeMillis();
         Consumer<Long, EnrichedHeartBeat> heartbeatConsumer = createHeartBeatConsumer();
         Consumer<Long, EnrichedSpeed> speedConsumer = createSpeedConsumer();
