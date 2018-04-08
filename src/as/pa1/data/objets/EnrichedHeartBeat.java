@@ -15,4 +15,12 @@ public class EnrichedHeartBeat extends HeartBeat {
         return car_reg;
     }
     
+    @Override
+    public String toString() {
+        return String.join("|",
+                String.format("%02d", this.getCar_id()),
+                Integer.toString(this.getTime()),
+                car_reg,
+                this.getMsg_id());
+    }
 }
