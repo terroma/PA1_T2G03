@@ -6,6 +6,8 @@
 package as.pa1.gui;
 
 import as.pa1.collectentity.CollectEntityHeartBeat;
+import as.pa1.collectentity.CollectEntitySpeed;
+import as.pa1.collectentity.CollectEntityStatus;
 import java.awt.Color;
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ExecutionException;
@@ -23,7 +25,9 @@ public class CollectEntityGUI extends javax.swing.JFrame {
     private final Color BACKGROUNDCOLOR = new java.awt.Color(60,63,65);
     private final Color FOREGROUNDCOLOR = new java.awt.Color(187,187,187);
     private final Color TEXTAREA_BACKGROUND = new java.awt.Color(69,73,79);
-    private static CollectEntityHeartBeat ceHB;
+    private final CollectEntityHeartBeat ceHB;
+    private final CollectEntitySpeed ceSP;
+    private final CollectEntityStatus ceST;
     private Timer timer;
     
     /**
@@ -32,6 +36,8 @@ public class CollectEntityGUI extends javax.swing.JFrame {
     public CollectEntityGUI() {
         initComponents();
         ceHB = new CollectEntityHeartBeat(this);
+        ceSP = new CollectEntitySpeed(this);
+        ceST = new CollectEntityStatus(this);
     }
 
     private void setComponentColors() {
@@ -153,7 +159,20 @@ public class CollectEntityGUI extends javax.swing.JFrame {
                 return ceHB;
             }
         }.execute();
-                
+        new SwingWorker<CollectEntitySpeed, Object> () {
+            @Override
+            protected CollectEntitySpeed doInBackground() throws Exception {
+                ceSP.runCollectEntity();
+                return ceSP;
+            }
+        }.execute();
+        new SwingWorker<CollectEntityStatus, Object> () {
+            @Override
+            protected CollectEntityStatus doInBackground() throws Exception {
+                ceST.runCollectEntity();
+                return ceST;
+            }
+        }.execute();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     public void updateHeartBeatText(String line) {

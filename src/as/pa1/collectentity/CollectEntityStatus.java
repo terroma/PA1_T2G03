@@ -1,6 +1,7 @@
 package as.pa1.collectentity;
 
 import as.pa1.data.objets.Status;
+import as.pa1.gui.CollectEntityGUI;
 import as.pa1.serialization.StatusSerializer;
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,6 +28,15 @@ public class CollectEntityStatus implements CollectEntity<Status> {
     private static final String BOOTSTRAP_SERVERS = 
             "loaclhost:9092,loacalhost:9093,localhost:9094";
     private BufferedReader in;
+    private CollectEntityGUI guiFrame;
+    
+    public CollectEntityStatus() {
+        
+    }
+    
+    public CollectEntityStatus(CollectEntityGUI guiFrame) {
+        this.guiFrame = guiFrame;
+    }
     
     @Override
     public Producer<Long, Status> createProducer() {
@@ -55,6 +65,9 @@ public class CollectEntityStatus implements CollectEntity<Status> {
                 String[] lineArgs = line.split("\\|");
                 Status st = new Status(Integer.parseInt(lineArgs[0]),Integer.parseInt(lineArgs[1]),lineArgs[2],lineArgs[3]);
                 producer.send(new ProducerRecord<Long, Status>(TOPIC,index,st)).get();
+                if (guiFrame != null) {
+                    guiFrame.updateStatusText(line);
+                }
                 /**
                 final ProducerRecord<Long, String> record = new ProducerRecord<>(TOPIC, index, line);
                 RecordMetadata metadata = producer.send(record).get();

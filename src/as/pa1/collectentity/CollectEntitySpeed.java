@@ -1,6 +1,7 @@
 package as.pa1.collectentity;
 
 import as.pa1.data.objets.Speed;
+import as.pa1.gui.CollectEntityGUI;
 import as.pa1.serialization.SpeedSerializer;
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,6 +28,15 @@ public class CollectEntitySpeed implements CollectEntity<Speed> {
     private static final String BOOTSTRAP_SERVERS = 
             "loaclhost:9092,loacalhost:9093,localhost:9094";
     private BufferedReader in;
+    private CollectEntityGUI guiFrame;
+    
+    public CollectEntitySpeed() {
+        
+    }
+    
+    public CollectEntitySpeed(CollectEntityGUI guiFrame) {
+        this.guiFrame = guiFrame;
+    }
     
     @Override
     public Producer<Long, Speed> createProducer() {
@@ -55,6 +65,9 @@ public class CollectEntitySpeed implements CollectEntity<Speed> {
                 String[] lineArgs = line.split("\\|");
                 Speed spd = new Speed(Integer.parseInt(lineArgs[0]),Integer.parseInt(lineArgs[1]),lineArgs[2],Integer.parseInt(lineArgs[3]),Integer.parseInt(lineArgs[4]));
                 producer.send(new ProducerRecord<Long, Speed>(TOPIC,index,spd)).get();
+                if (guiFrame != null) {
+                    guiFrame.updateSpeedText(line);
+                }
                 /**
                 final ProducerRecord<Long, String> record = new ProducerRecord<>(TOPIC, index, line);
                 RecordMetadata metadata = producer.send(record).get();
