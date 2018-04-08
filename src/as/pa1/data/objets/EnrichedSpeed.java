@@ -24,4 +24,15 @@ public class EnrichedSpeed extends Speed {
         return max_speed;
     }
     
+    @Override
+    public String toString() {
+        return String.join("|",
+                String.format("%02d", this.getCar_id()),
+                Integer.toString(this.getTime()),
+                car_reg,
+                this.getMsg_id(),
+                Integer.toString(this.getSpeed()),
+                Integer.toString(this.getLocalization()),
+                Integer.toString(max_speed));
+    }
 }

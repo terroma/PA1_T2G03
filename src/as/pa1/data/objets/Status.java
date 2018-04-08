@@ -40,4 +40,13 @@ public class Status {
     public String getCar_status() {
         return car_status;
     }
+    
+    @Override
+    public String toString() {
+        return String.join("|",
+                String.format("%02d", car_id),
+                Integer.toString(time),
+                msg_id,
+                car_status);
+    }
 }
