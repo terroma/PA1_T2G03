@@ -5,7 +5,12 @@
  */
 package as.pa1.gui;
 
+import as.pa1.digestionentity.DigestionEntityHeartBeat;
+import as.pa1.digestionentity.DigestionEntitySpeed;
+import as.pa1.digestionentity.DigestionEntityStatus;
+import java.awt.Color;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 
 /**
  *
@@ -13,11 +18,21 @@ import javax.swing.SwingUtilities;
  */
 public class DigestionEntityGUI extends javax.swing.JFrame {
 
+    private final Color BACKGROUNDCOLOR = new java.awt.Color(60,63,65);
+    private final Color FOREGROUNDCOLOR = new java.awt.Color(187,187,187);
+    private final Color TEXTAREA_BACKGROUND = new java.awt.Color(69,73,79);
+    private final DigestionEntityHeartBeat deHB;
+    private final DigestionEntitySpeed deSP;
+    private final DigestionEntityStatus deST;
+    
     /**
      * Creates new form DigestionEntityGUI
      */
     public DigestionEntityGUI() {
         initComponents();
+        deHB = new DigestionEntityHeartBeat(this);
+        deSP = new DigestionEntitySpeed(this);
+        deST = new DigestionEntityStatus(this);
     }
 
     /**
@@ -157,7 +172,27 @@ public class DigestionEntityGUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        new SwingWorker<DigestionEntityHeartBeat, Object> () {
+            @Override
+            protected DigestionEntityHeartBeat doInBackground() throws Exception {
+                deHB.runDigestionEntity();
+                return deHB;
+            }
+        }.execute();
+        new SwingWorker<DigestionEntitySpeed, Object> () {
+            @Override
+            protected DigestionEntitySpeed doInBackground() throws Exception {
+                deSP.runDigestionEntity();
+                return deSP;
+            }
+        }.execute();
+        new SwingWorker<DigestionEntityStatus, Object> () {
+            @Override
+            protected DigestionEntityStatus doInBackground() throws Exception {
+                deST.runDigestionEntity();
+                return deST;
+            }
+        }.execute();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     public void updateHeartBeatText(String heartbeat, String enrichedHeartBeat) {
@@ -166,6 +201,26 @@ public class DigestionEntityGUI extends javax.swing.JFrame {
             public void run() {
                 jTextArea1.append(heartbeat+"\n");
                 jTextArea2.append(enrichedHeartBeat+"\n");
+            }
+        });
+    }
+    
+    public void updateSpeedText(String speed, String enrichedSpeed) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                jTextArea3.append(speed+"\n");
+                jTextArea4.append(enrichedSpeed+"\n");
+            }
+        });
+    }
+    
+    public void updateStatusText(String status, String enrichedStatus) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                jTextArea5.append(status+"\n");
+                jTextArea6.append(enrichedStatus+"\n");
             }
         });
     }

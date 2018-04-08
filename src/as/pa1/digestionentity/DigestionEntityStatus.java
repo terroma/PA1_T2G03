@@ -2,10 +2,14 @@ package as.pa1.digestionentity;
 
 import as.pa1.data.objets.EnrichedStatus;
 import as.pa1.data.objets.Status;
+import as.pa1.gui.DigestionEntityGUI;
 import as.pa1.serialization.EnrichedStatusSerializer;
 import as.pa1.serialization.StatusDeserializer;
 import java.util.Arrays;
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -25,6 +29,15 @@ public class DigestionEntityStatus implements DigestionEntity<Status, EnrichedSt
     private final static String CLIENT_ID = "DigestionEntitySTATUS";
     private final static String BOOTSTRAP_SERVERS =
             "localhost:9092, localhost:9093, localhost:9094";
+    private DigestionEntityGUI guiFrame;
+    
+    public DigestionEntityStatus() {
+        
+    }
+    
+    public DigestionEntityStatus(DigestionEntityGUI guiFrame) {
+        this.guiFrame = guiFrame;
+    }
     
     @Override
     public Consumer<Long, Status> createConsumer() {
@@ -73,14 +86,20 @@ public class DigestionEntityStatus implements DigestionEntity<Status, EnrichedSt
                                     record.value().getMsg_id(),
                                     record.value().getCar_status()
                             );
-                            producer.send(new ProducerRecord<Long, EnrichedStatus>(ENRICHEDTOPIC,time,enrichedSTATUS));
+                            producer.send(new ProducerRecord<Long, EnrichedStatus>(ENRICHEDTOPIC,time,enrichedSTATUS)).get();
+                            
+                            if (guiFrame != null) {
+                                guiFrame.updateStatusText(
+                                        record.value().toString(),
+                                        enrichedSTATUS.toString());
+                            }
                         }
                         time++;
                     }
                 }
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (ExecutionException | InterruptedException ex) {
+            Logger.getLogger(DigestionEntityStatus.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
             consumer.close();
             producer.flush();

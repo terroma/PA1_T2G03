@@ -2,11 +2,13 @@ package as.pa1.digestionentity;
 
 import as.pa1.data.objets.EnrichedSpeed;
 import as.pa1.data.objets.Speed;
+import as.pa1.gui.DigestionEntityGUI;
 import as.pa1.serialization.EnrichedSpeedSerializer;
 import as.pa1.serialization.SpeedDeserializer;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.kafka.clients.consumer.Consumer;
@@ -30,6 +32,15 @@ public class DigestionEntitySpeed implements DigestionEntity<Speed, EnrichedSpee
     private final static String CLIENT_ID = "DigestionEntitySPEED";
     private final static String BOOTSTRAP_SERVERS =
             "localhost:9092, localhost:9093, localhost:9094";
+    private DigestionEntityGUI guiFrame;
+    
+    public DigestionEntitySpeed() {
+        
+    }
+    
+    public DigestionEntitySpeed(DigestionEntityGUI guiFrame) {
+        this.guiFrame = guiFrame;
+    }
     
     @Override
     public Consumer<Long, Speed> createConsumer() {
@@ -56,7 +67,7 @@ public class DigestionEntitySpeed implements DigestionEntity<Speed, EnrichedSpee
     }
     
     @Override
-    public void runDigestionEntity() throws InterruptedException {
+    public void runDigestionEntity(){
         long time = System.currentTimeMillis();
         Consumer<Long, Speed> consumer = createConsumer();
         Producer<Long, EnrichedSpeed> producer = createProducer();
@@ -81,13 +92,19 @@ public class DigestionEntitySpeed implements DigestionEntity<Speed, EnrichedSpee
                                     MAX_SPEED
                             );
                             producer.send(new ProducerRecord<Long, EnrichedSpeed>(ENRICHEDTOPIC,time,enrichedSPEED)).get();
+                            
+                            if (guiFrame != null) {
+                                guiFrame.updateSpeedText(
+                                        record.value().toString(),
+                                        enrichedSPEED.toString());
+                            }
                         }
                         time++;
                     }
                 }
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (InterruptedException | ExecutionException ex) {
+            Logger.getLogger(DigestionEntitySpeed.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
             consumer.close();
             producer.flush();
@@ -97,10 +114,6 @@ public class DigestionEntitySpeed implements DigestionEntity<Speed, EnrichedSpee
     
     public static void main(String[] args) {
         DigestionEntitySpeed des = new DigestionEntitySpeed();
-        try {
-            des.runDigestionEntity();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(DigestionEntitySpeed.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        des.runDigestionEntity();
     }
 }

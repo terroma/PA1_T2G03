@@ -60,7 +60,7 @@ public class CollectEntityHeartBeat implements CollectEntity<HeartBeat> {
             while ((line = in.readLine()) != null) {
                 String[] lineArgs = line.split("\\|");
                 HeartBeat hb = new HeartBeat(Integer.parseInt(lineArgs[0]),Integer.parseInt(lineArgs[1]),lineArgs[2]);
-                producer.send(new ProducerRecord<Long, HeartBeat>(TOPIC,time,hb)).get();
+                producer.send(new ProducerRecord<Long, HeartBeat>(TOPIC, time, hb)).get();
                 if (guiFrame != null) {
                     // sleep for showing purposes
                     //Thread.sleep(1000);
@@ -72,9 +72,7 @@ public class CollectEntityHeartBeat implements CollectEntity<HeartBeat> {
             Logger.getLogger(CollectEntityHeartBeat.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } catch (IOException ex) {
             Logger.getLogger(CollectEntityHeartBeat.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(CollectEntityHeartBeat.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
-        } catch (ExecutionException ex) {
+        } catch (InterruptedException | ExecutionException ex) {
             Logger.getLogger(CollectEntityHeartBeat.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
             producer.flush();

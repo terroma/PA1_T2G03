@@ -22,14 +22,14 @@ import javax.swing.Timer;
  * @author terroma
  */
 public class CollectEntityGUI extends javax.swing.JFrame {
+   
     private final Color BACKGROUNDCOLOR = new java.awt.Color(60,63,65);
     private final Color FOREGROUNDCOLOR = new java.awt.Color(187,187,187);
     private final Color TEXTAREA_BACKGROUND = new java.awt.Color(69,73,79);
     private final CollectEntityHeartBeat ceHB;
     private final CollectEntitySpeed ceSP;
     private final CollectEntityStatus ceST;
-    private Timer timer;
-    
+        
     /**
      * Creates new form CollectEntityGUI
      */

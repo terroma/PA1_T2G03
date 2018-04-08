@@ -2,6 +2,7 @@ package as.pa1.digestionentity;
 
 import as.pa1.data.objets.EnrichedHeartBeat;
 import as.pa1.data.objets.HeartBeat;
+import as.pa1.gui.DigestionEntityGUI;
 import as.pa1.serialization.EnrichedHeartBeatSerializer;
 import as.pa1.serialization.HeartBeatDeserializer;
 import java.util.Collections;
@@ -30,6 +31,15 @@ public class DigestionEntityHeartBeat implements DigestionEntity<HeartBeat, Enri
     private final static String CLIENT_ID = "DigestionEntityHB";
     private final static String BOOTSTRAP_SERVERS =
             "localhost:9092, localhost:9093, localhost:9094";
+    private DigestionEntityGUI guiFrame;
+    
+    public DigestionEntityHeartBeat() {
+        
+    }
+    
+    public DigestionEntityHeartBeat(DigestionEntityGUI guiFrame) {
+        this.guiFrame = guiFrame;
+    }
     
     @Override
     public Consumer<Long, HeartBeat> createConsumer() {
@@ -80,6 +90,12 @@ public class DigestionEntityHeartBeat implements DigestionEntity<HeartBeat, Enri
                                     record.value().getMsg_id()
                             );
                             producer.send(new ProducerRecord<Long, EnrichedHeartBeat>(ENRICHEDTOPIC,time,enrichedHB)).get();
+                            
+                            if (guiFrame != null) {
+                                guiFrame.updateHeartBeatText(
+                                        record.value().toString(),
+                                        enrichedHB.toString());
+                            }
                         }
                         time++;
                     }
@@ -103,7 +119,7 @@ public class DigestionEntityHeartBeat implements DigestionEntity<HeartBeat, Enri
                 **/
             }
         } catch (InterruptedException | ExecutionException ex) {
-            ex.printStackTrace();
+            Logger.getLogger(DigestionEntityHeartBeat.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
             //consumer.commitSync();
             consumer.close();
