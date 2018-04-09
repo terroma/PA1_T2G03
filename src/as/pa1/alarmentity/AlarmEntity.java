@@ -46,12 +46,12 @@ public class AlarmEntity {
      * @param max_speed 
      */
     private boolean stateChanged(int car_id, int speed, int max_speed) {
-        if (lastSpeedMap.get(car_id).equals(Alarm.ON) 
+        if (lastSpeedMap.get(car_id) == Alarm.ON 
                 && speed <= max_speed) {
             lastSpeedMap.replace(car_id, Alarm.OFF);
             return true;
         }
-        if (lastSpeedMap.get(car_id).equals(Alarm.OFF)
+        if (lastSpeedMap.get(car_id) == Alarm.OFF
                 && speed > max_speed) {
             lastSpeedMap.replace(car_id, Alarm.ON);
             return true;
