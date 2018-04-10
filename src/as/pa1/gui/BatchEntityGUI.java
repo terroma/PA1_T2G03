@@ -105,7 +105,7 @@ public class BatchEntityGUI extends javax.swing.JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                jTextArea1.append(message+"\n");
+                jTextArea1.append("| "+message+" |\n");
             }
         });
     }
