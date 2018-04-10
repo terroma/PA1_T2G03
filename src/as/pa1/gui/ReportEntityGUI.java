@@ -133,16 +133,32 @@ public class ReportEntityGUI extends javax.swing.JFrame {
         }.execute();
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    public void updateReportEntityText(String enrHeartBeat, String enrSpeed, String enrStatus) {
+    public void updateHeartBeatText(String enrHeartBeat) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                jTextArea1.append(enrHeartBeat+"\n");
-                jTextArea2.append(enrSpeed+"\n");
-                jTextArea3.append(enrStatus+"\n");
+                jTextArea1.append("| "+enrHeartBeat+" |\n");
             }
         });
     }
+    
+    public void updateSpeedText(String enrSpeed) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                jTextArea2.append("| "+enrSpeed+" |\n");
+            }
+        });
+    }
+    public void updateStatusText(String enrStatus) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                jTextArea3.append("| "+enrStatus+" |\n");
+            }
+        });
+    }
+    
     
     /**
      * @param args the command line arguments

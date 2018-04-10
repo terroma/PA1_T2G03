@@ -16,7 +16,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.common.serialization.LongSerializer;
+import org.apache.kafka.common.serialization.LongDeserializer;
 
 /**
  *
@@ -43,8 +43,8 @@ public class ReportEntity {
     private Consumer<Long, EnrichedHeartBeat> createHeartBeatConsumer() {
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, CLIENT_ID);
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, CLIENT_ID+"1");
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, EnrichedHeartBeatDeserializer.class.getName());
         Consumer<Long, EnrichedHeartBeat> consumer = new KafkaConsumer<>(props);
         consumer.subscribe(Arrays.asList(TOPICS[0]));
@@ -54,8 +54,8 @@ public class ReportEntity {
     private Consumer<Long, EnrichedSpeed> createSpeedConsumer() {
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, CLIENT_ID);
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, CLIENT_ID+"2");
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, EnrichedSpeedDeserializer.class.getName());
         Consumer<Long, EnrichedSpeed> consumer = new KafkaConsumer<>(props);
         consumer.subscribe(Arrays.asList(TOPICS[1]));
@@ -65,8 +65,8 @@ public class ReportEntity {
     private Consumer<Long, EnrichedStatus> createStatusConsumer() {
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, CLIENT_ID);
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, CLIENT_ID+"3");
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, EnrichedStatusDeserializer.class.getName());
         Consumer<Long, EnrichedStatus> consumer = new KafkaConsumer<>(props);
         consumer.subscribe(Arrays.asList(TOPICS[2]));
@@ -87,8 +87,8 @@ public class ReportEntity {
         dbConnection.init();
         
         String insertHeartBeat = "insert into enrichedheartbeat (car_id, time, car_reg, msg_id) values (?, ?, ?, ?)";
-        String insertSpeed = "insert into enrichedheartbeat (car_id, time, car_reg, msg_id, speed, localization, max_speed) values (?, ?, ?, ?, ?, ?, ?)";
-        String insertStatus = "insert into enrichedheartbeat (car_id, time, car_reg, msg_id, car_status) values (?, ?, ?, ?, ?)";
+        String insertSpeed = "insert into enrichedspeed (car_id, time, car_reg, msg_id, speed, localization, max_speed) values (?, ?, ?, ?, ?, ?, ?)";
+        String insertStatus = "insert into enrichedstatus (car_id, time, car_reg, msg_id, car_status) values (?, ?, ?, ?, ?)";
         
         PreparedStatement psHeartBeat = null;
         PreparedStatement psSpeed = null;
@@ -110,6 +110,9 @@ public class ReportEntity {
                             psHeartBeat.setString(4, enrHeartBeat.getMsg_id());
                             psHeartBeat.addBatch();
                             
+                            if (guiFrame != null)
+                                guiFrame.updateHeartBeatText(enrHeartBeat.toString());
+                            
                             if (++count % batchSize == 0) 
                                 psHeartBeat.executeBatch();
                         }
@@ -130,6 +133,9 @@ public class ReportEntity {
                             psSpeed.setInt(7, enrSpeed.getMax_speed());
                             psSpeed.addBatch();
                             
+                            if (guiFrame != null)
+                                guiFrame.updateSpeedText(enrSpeed.toString());
+                            
                             if (++count % batchSize == 0)
                                 psSpeed.executeBatch();
                         }
@@ -147,6 +153,9 @@ public class ReportEntity {
                             psStatus.setString(4, enrStatus.getMsg_id());
                             psStatus.setString(5, enrStatus.getCar_status());
                             psStatus.addBatch();
+                            
+                            if (guiFrame != null)
+                                guiFrame.updateStatusText(enrStatus.toString());
                             
                             if (++count % batchSize == 0)
                                 psStatus.executeBatch();

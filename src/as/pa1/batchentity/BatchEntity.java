@@ -51,7 +51,7 @@ public class BatchEntity {
     private Consumer<Long, EnrichedHeartBeat> createHeartBeatConsumer() {
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "1");
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, CLIENT_ID+"1");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, EnrichedHeartBeatDeserializer.class.getName());
         Consumer<Long, EnrichedHeartBeat> consumer = new KafkaConsumer<>(props);
@@ -62,7 +62,7 @@ public class BatchEntity {
     private Consumer<Long, EnrichedSpeed> createSpeedConsumer() {
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "2");
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, CLIENT_ID+"2");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, EnrichedSpeedDeserializer.class.getName());
         Consumer<Long, EnrichedSpeed> consumer = new KafkaConsumer<>(props);
@@ -73,7 +73,7 @@ public class BatchEntity {
     private Consumer<Long, EnrichedStatus> createStatusConsumer() {
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "3");
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, CLIENT_ID+"3");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, EnrichedStatusDeserializer.class.getName());
         Consumer<Long, EnrichedStatus> consumer = new KafkaConsumer<>(props);
