@@ -177,7 +177,8 @@ public class DigestionEntityGUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        new SwingWorker<DigestionEntityHeartBeat, Object> () {
+        
+        /*new SwingWorker<DigestionEntityHeartBeat, Object> () {
             @Override
             protected DigestionEntityHeartBeat doInBackground() throws Exception {
                 deHB.runDigestionEntity();
@@ -190,11 +191,12 @@ public class DigestionEntityGUI extends javax.swing.JFrame {
                 deSP.runDigestionEntity();
                 return deSP;
             }
-        }.execute();
+        }.execute();*/
         new SwingWorker<DigestionEntityStatus, Object> () {
             @Override
             protected DigestionEntityStatus doInBackground() throws Exception {
                 deST.runDigestionEntity();
+                System.out.println(deST);
                 return deST;
             }
         }.execute();

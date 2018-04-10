@@ -81,7 +81,7 @@ public class DigestionEntitySpeed implements DigestionEntity<Speed, EnrichedSpee
                             System.out.println("Speed recieved as null.");
                         } else {
                             String car_reg = reg+String.format("%02d", record.value().getCar_id());
-                            System.out.println(car_reg);
+                            //System.out.println(car_reg);
                             EnrichedSpeed enrichedSPEED = new EnrichedSpeed(
                                     record.value().getCar_id(),
                                     record.value().getTime(),

@@ -82,7 +82,7 @@ public class DigestionEntityHeartBeat implements DigestionEntity<HeartBeat, Enri
                             System.out.println("HeartBeat recieved as null.");
                         } else {
                             String car_reg = reg+String.format("%02d", record.value().getCar_id());
-                            System.out.println(car_reg);
+                            //System.out.println(car_reg);
                             EnrichedHeartBeat enrichedHB = new EnrichedHeartBeat(
                                     record.value().getCar_id(),
                                     record.value().getTime(),

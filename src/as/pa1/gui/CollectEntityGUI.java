@@ -152,7 +152,7 @@ public class CollectEntityGUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        new SwingWorker<CollectEntityHeartBeat, Object> () {
+        /*new SwingWorker<CollectEntityHeartBeat, Object> () {
             @Override
             protected CollectEntityHeartBeat doInBackground() throws Exception {
                 ceHB.runCollectEntity();
@@ -165,7 +165,7 @@ public class CollectEntityGUI extends javax.swing.JFrame {
                 ceSP.runCollectEntity();
                 return ceSP;
             }
-        }.execute();
+        }.execute();*/
         new SwingWorker<CollectEntityStatus, Object> () {
             @Override
             protected CollectEntityStatus doInBackground() throws Exception {

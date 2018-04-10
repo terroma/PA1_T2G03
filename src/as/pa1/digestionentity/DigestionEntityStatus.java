@@ -19,6 +19,7 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.LongDeserializer;
 import org.apache.kafka.common.serialization.LongSerializer;
 
 public class DigestionEntityStatus implements DigestionEntity<Status, EnrichedStatus> {
@@ -44,7 +45,7 @@ public class DigestionEntityStatus implements DigestionEntity<Status, EnrichedSt
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, CLIENT_ID);
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StatusDeserializer.class.getName());
         Consumer<Long, Status> consumer = new KafkaConsumer<>(props);
         //consumer.subscribe(Collections.singleton(ENRICHTOPIC));
@@ -68,7 +69,6 @@ public class DigestionEntityStatus implements DigestionEntity<Status, EnrichedSt
         long time = System.currentTimeMillis();
         Consumer<Long, Status> consumer = createConsumer();
         Producer<Long, EnrichedStatus> producer = createProducer();
-        
         try {
             while (true) {
                 ConsumerRecords<Long, Status> records = consumer.poll(100);
@@ -78,7 +78,7 @@ public class DigestionEntityStatus implements DigestionEntity<Status, EnrichedSt
                             System.out.println("Status recieved as null.");
                         } else {
                             String car_reg = reg+String.format("%02d",record.value().getCar_id());
-                            System.out.println(car_reg);
+                            //System.out.println(car_reg);
                             EnrichedStatus enrichedSTATUS = new EnrichedStatus(
                                     record.value().getCar_id(),
                                     record.value().getTime(),
