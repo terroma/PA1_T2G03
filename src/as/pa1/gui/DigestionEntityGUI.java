@@ -14,8 +14,11 @@ import javax.swing.SwingWorker;
 
 /**
  *
- * @author terroma
+ * @author Bruno Assunção 89010
+ * @author Hugo Chaves  90842
+ * 
  */
+
 public class DigestionEntityGUI extends javax.swing.JFrame {
 
     private final Color BACKGROUNDCOLOR = new java.awt.Color(60,63,65);

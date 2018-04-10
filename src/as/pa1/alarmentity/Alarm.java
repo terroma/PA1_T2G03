@@ -1,3 +1,9 @@
+/**
+ *
+ * @author Bruno Assunção 89010
+ * @author Hugo Chaves  90842
+ * 
+ */
 package as.pa1.alarmentity;
 
 public enum Alarm {

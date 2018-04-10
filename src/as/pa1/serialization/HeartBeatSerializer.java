@@ -7,6 +7,13 @@ import java.util.Map;
 import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.serialization.Serializer;
 
+/**
+ *
+ * @author Bruno Assunção 89010
+ * @author Hugo Chaves  90842
+ * 
+ */
+
 public class HeartBeatSerializer implements Serializer<HeartBeat> {
     
     private final String encoding = "UTF-8";

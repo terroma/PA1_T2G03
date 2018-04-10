@@ -13,6 +13,13 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.LongDeserializer;
 
+/**
+ *
+ * @author Bruno Assunção 89010
+ * @author Hugo Chaves  90842
+ * 
+ */
+
 public class AlarmEntity {
     
     private final static String TOPIC = "EnrichedTopic_2";

@@ -18,6 +18,13 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.LongSerializer;
 
+/**
+ *
+ * @author Bruno Assunção 89010
+ * @author Hugo Chaves  90842
+ * 
+ */
+
 public class CollectEntityStatus implements CollectEntity<Status> {
     
     private static final String PATH = new File("").getAbsolutePath().concat("/src/as/pa1/data/STATUS.txt");

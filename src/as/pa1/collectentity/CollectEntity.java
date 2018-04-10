@@ -7,6 +7,13 @@ import org.apache.kafka.clients.producer.Producer;
 
 /**
  *
+ * @author Bruno Assunção 89010
+ * @author Hugo Chaves  90842
+ * 
+ */
+
+/**
+ *
  * Interface that specifies CollectEntity methods and behavior.
  * <p>
  * CollectEntity should create a KafkaProducer with specific

@@ -6,6 +6,13 @@ import java.util.Map;
 import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.serialization.Deserializer;
 
+/**
+ *
+ * @author Bruno Assunção 89010
+ * @author Hugo Chaves  90842
+ * 
+ */
+
 public class HeartBeatDeserializer implements Deserializer<HeartBeat> {
     
     private final String encoding = "UTF-8";

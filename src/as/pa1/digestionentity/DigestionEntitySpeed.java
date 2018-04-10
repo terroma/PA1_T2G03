@@ -22,6 +22,13 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.LongDeserializer;
 import org.apache.kafka.common.serialization.LongSerializer;
 
+/**
+ *
+ * @author Bruno Assunção 89010
+ * @author Hugo Chaves  90842
+ * 
+ */
+
 public class DigestionEntitySpeed implements DigestionEntity<Speed, EnrichedSpeed> {
     
     private String reg = "XX-YY-";

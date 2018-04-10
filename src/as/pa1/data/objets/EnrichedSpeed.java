@@ -1,5 +1,12 @@
 package as.pa1.data.objets;
 
+/**
+ *
+ * @author Bruno Assunção 89010
+ * @author Hugo Chaves  90842
+ * 
+ */
+
 public class EnrichedSpeed extends Speed {
     private String car_reg;
     private int max_speed;

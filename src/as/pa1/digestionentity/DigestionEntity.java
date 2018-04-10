@@ -6,6 +6,13 @@ import org.apache.kafka.clients.producer.Producer;
 
 /**
  *
+ * @author Bruno Assunção 89010
+ * @author Hugo Chaves  90842
+ * 
+ */
+
+/**
+ *
  * Interface that specifies DigestionEntity methods and behavior.
  * <p>
  * DigestionEntity should create a KafkaConsumer and KafkaProducer

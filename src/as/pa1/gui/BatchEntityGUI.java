@@ -11,8 +11,11 @@ import as.pa1.batchentity.BatchEntity;
 
 /**
  *
- * @author terroma
+ * @author Bruno Assunção 89010
+ * @author Hugo Chaves  90842
+ * 
  */
+
 public class BatchEntityGUI extends javax.swing.JFrame {
 
     private final BatchEntity batchEntity;

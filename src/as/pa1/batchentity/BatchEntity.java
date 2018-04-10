@@ -24,6 +24,13 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.LongDeserializer;
 import org.apache.kafka.common.serialization.LongSerializer;
 
+/**
+ *
+ * @author Bruno Assunção 89010
+ * @author Hugo Chaves  90842
+ * 
+ */
+
 public class BatchEntity {
     private static final String PATH = new File("").getAbsolutePath().concat("/src/as/pa1/data/BATCH.txt");
     private static final String CLIENT_ID = "BatchEntity";

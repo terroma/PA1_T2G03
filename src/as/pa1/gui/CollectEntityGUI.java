@@ -19,8 +19,11 @@ import javax.swing.Timer;
 
 /**
  *
- * @author terroma
+ * @author Bruno Assunção 89010
+ * @author Hugo Chaves  90842
+ * 
  */
+
 public class CollectEntityGUI extends javax.swing.JFrame {
    
     private final Color BACKGROUNDCOLOR = new java.awt.Color(60,63,65);

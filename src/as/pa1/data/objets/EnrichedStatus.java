@@ -1,5 +1,12 @@
 package as.pa1.data.objets;
 
+/**
+ *
+ * @author Bruno Assunção 89010
+ * @author Hugo Chaves  90842
+ * 
+ */
+
 public class EnrichedStatus extends Status {
     private String car_reg;
     
