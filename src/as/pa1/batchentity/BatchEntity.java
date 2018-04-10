@@ -88,6 +88,9 @@ public class BatchEntity {
         Consumer<Long, EnrichedStatus> statusConsumer = createStatusConsumer();
         try {
             String line = null;
+            // empty file before writing to it
+            out = new BufferedWriter(new FileWriter(PATH));
+            out.close();
             
             while (true) {
                 ConsumerRecords<Long, EnrichedHeartBeat> heartbeatRecords = heartbeatConsumer.poll(100);
