@@ -78,7 +78,6 @@ public class DigestionEntityStatus implements DigestionEntity<Status, EnrichedSt
                             System.out.println("Status recieved as null.");
                         } else {
                             String car_reg = reg+String.format("%02d",record.value().getCar_id());
-                            //System.out.println(car_reg);
                             EnrichedStatus enrichedSTATUS = new EnrichedStatus(
                                     record.value().getCar_id(),
                                     record.value().getTime(),
@@ -87,7 +86,6 @@ public class DigestionEntityStatus implements DigestionEntity<Status, EnrichedSt
                                     record.value().getCar_status()
                             );
                             producer.send(new ProducerRecord<Long, EnrichedStatus>(ENRICHEDTOPIC,time,enrichedSTATUS)).get();
-                            
                             if (guiFrame != null) {
                                 guiFrame.updateStatusText(
                                         record.value().toString(),

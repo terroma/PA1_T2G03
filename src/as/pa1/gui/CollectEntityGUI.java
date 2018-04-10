@@ -152,7 +152,7 @@ public class CollectEntityGUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        /*new SwingWorker<CollectEntityHeartBeat, Object> () {
+        new SwingWorker<CollectEntityHeartBeat, Object> () {
             @Override
             protected CollectEntityHeartBeat doInBackground() throws Exception {
                 ceHB.runCollectEntity();
@@ -165,7 +165,7 @@ public class CollectEntityGUI extends javax.swing.JFrame {
                 ceSP.runCollectEntity();
                 return ceSP;
             }
-        }.execute();*/
+        }.execute();
         new SwingWorker<CollectEntityStatus, Object> () {
             @Override
             protected CollectEntityStatus doInBackground() throws Exception {
@@ -179,7 +179,7 @@ public class CollectEntityGUI extends javax.swing.JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                jTextArea1.append(line+"\n");
+                jTextArea1.append("| " + line+ " |\n");
             }
         });
     }
@@ -188,7 +188,7 @@ public class CollectEntityGUI extends javax.swing.JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                jTextArea2.append(line+"\n");
+                jTextArea2.append("| "+line+" |\n");
             }
         });
     }
@@ -197,7 +197,7 @@ public class CollectEntityGUI extends javax.swing.JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                jTextArea3.append(line+"\n");
+                jTextArea3.append("| "+line+" |\n");
             }
         });
     }

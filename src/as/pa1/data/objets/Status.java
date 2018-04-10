@@ -43,7 +43,7 @@ public class Status {
     
     @Override
     public String toString() {
-        return String.join("|",
+        return String.join(" | ",
                 String.format("%02d", car_id),
                 Integer.toString(time),
                 msg_id,

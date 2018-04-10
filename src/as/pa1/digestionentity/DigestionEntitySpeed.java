@@ -6,7 +6,6 @@ import as.pa1.gui.DigestionEntityGUI;
 import as.pa1.serialization.EnrichedSpeedSerializer;
 import as.pa1.serialization.SpeedDeserializer;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
@@ -81,7 +80,6 @@ public class DigestionEntitySpeed implements DigestionEntity<Speed, EnrichedSpee
                             System.out.println("Speed recieved as null.");
                         } else {
                             String car_reg = reg+String.format("%02d", record.value().getCar_id());
-                            //System.out.println(car_reg);
                             EnrichedSpeed enrichedSPEED = new EnrichedSpeed(
                                     record.value().getCar_id(),
                                     record.value().getTime(),
@@ -92,7 +90,6 @@ public class DigestionEntitySpeed implements DigestionEntity<Speed, EnrichedSpee
                                     MAX_SPEED
                             );
                             producer.send(new ProducerRecord<Long, EnrichedSpeed>(ENRICHEDTOPIC,time,enrichedSPEED)).get();
-                            
                             if (guiFrame != null) {
                                 guiFrame.updateSpeedText(
                                         record.value().toString(),

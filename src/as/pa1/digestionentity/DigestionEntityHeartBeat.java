@@ -21,7 +21,6 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.LongDeserializer;
 import org.apache.kafka.common.serialization.LongSerializer;
-import org.apache.kafka.common.serialization.StringDeserializer;
 
 public class DigestionEntityHeartBeat implements DigestionEntity<HeartBeat, EnrichedHeartBeat> {
     
@@ -82,7 +81,6 @@ public class DigestionEntityHeartBeat implements DigestionEntity<HeartBeat, Enri
                             System.out.println("HeartBeat recieved as null.");
                         } else {
                             String car_reg = reg+String.format("%02d", record.value().getCar_id());
-                            //System.out.println(car_reg);
                             EnrichedHeartBeat enrichedHB = new EnrichedHeartBeat(
                                     record.value().getCar_id(),
                                     record.value().getTime(),
@@ -90,7 +88,6 @@ public class DigestionEntityHeartBeat implements DigestionEntity<HeartBeat, Enri
                                     record.value().getMsg_id()
                             );
                             producer.send(new ProducerRecord<Long, EnrichedHeartBeat>(ENRICHEDTOPIC,time,enrichedHB)).get();
-                            
                             if (guiFrame != null) {
                                 guiFrame.updateHeartBeatText(
                                         record.value().toString(),
@@ -100,23 +97,6 @@ public class DigestionEntityHeartBeat implements DigestionEntity<HeartBeat, Enri
                         time++;
                     }
                 }
-                /**
-                final ConsumerRecords<Long, String> consumerRecords = consumer.poll(1000);
-
-                if (consumerRecords.count() == 0) {
-                   noRecordsCount++;
-
-                   if (noRecordsCount > giveUp) break;
-                   else continue;
-                }
-
-                consumerRecords.forEach(record -> {
-                    System.out.printf("Consumer Record:(key=%d value=%s partition=%d offset=%d)\n",
-                            record.key(), record.value(),
-                            record.partition(), record.offset());
-                });
-                consumer.commitAsync();
-                **/
             }
         } catch (InterruptedException | ExecutionException ex) {
             Logger.getLogger(DigestionEntityHeartBeat.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);

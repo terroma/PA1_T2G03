@@ -1,6 +1,7 @@
 package as.pa1.alarmentity;
 
 import as.pa1.data.objets.EnrichedSpeed;
+import as.pa1.gui.AlarmEntityGUI;
 import as.pa1.serialization.EnrichedSpeedDeserializer;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,8 +20,14 @@ public class AlarmEntity {
     private final static String BOOTSTRAP_SERVERS =
             "localhost:9092, localhost:9093, localhost:9094";
     private HashMap<Integer, Alarm> lastSpeedMap;
+    private AlarmEntityGUI guiFrame;
     
     public AlarmEntity() {
+        lastSpeedMap = new HashMap<>();
+    }
+
+    public AlarmEntity(AlarmEntityGUI guiFrame) {
+        this.guiFrame = guiFrame;
         lastSpeedMap = new HashMap<>();
     }
     
@@ -86,7 +93,10 @@ public class AlarmEntity {
                                 checkSpeed(enrSpeed.getCar_id(), enrSpeed.getSpeed(), enrSpeed.getMax_speed());
                             } else {
                                 if (stateChanged(enrSpeed.getCar_id(), enrSpeed.getSpeed(), enrSpeed.getMax_speed())) {
-                                    line = enrSpeed.toString()+"|"+lastSpeedMap.get(enrSpeed.getCar_id()).getValue();
+                                    line = "| " + enrSpeed.toString()+" | "+lastSpeedMap.get(enrSpeed.getCar_id()).getValue() + " |";
+                                    if(guiFrame!=null){
+                                        guiFrame.updateAlarmText(line);
+                                    }
                                 }
                             }
                         }

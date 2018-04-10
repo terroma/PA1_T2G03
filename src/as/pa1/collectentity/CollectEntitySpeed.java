@@ -16,9 +16,7 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.LongSerializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 
 public class CollectEntitySpeed implements CollectEntity<Speed> {
     
@@ -63,32 +61,19 @@ public class CollectEntitySpeed implements CollectEntity<Speed> {
             
             while ((line = in.readLine()) != null) {
                 String[] lineArgs = line.split("\\|");
-                Speed spd = new Speed(Integer.parseInt(lineArgs[0]),Integer.parseInt(lineArgs[1]),lineArgs[2],Integer.parseInt(lineArgs[3]),Integer.parseInt(lineArgs[4]));
-                producer.send(new ProducerRecord<Long, Speed>(TOPIC,index,spd)).get();
+                Speed sp = new Speed(Integer.parseInt(lineArgs[0]),Integer.parseInt(lineArgs[1]),lineArgs[2],Integer.parseInt(lineArgs[3]),Integer.parseInt(lineArgs[4]));
+                producer.send(new ProducerRecord<Long, Speed>(TOPIC,index,sp)).get();
                 if (guiFrame != null) {
-                    guiFrame.updateSpeedText(line);
+                    Thread.sleep(1000);
+                    guiFrame.updateSpeedText(sp.toString());
                 }
-                /**
-                final ProducerRecord<Long, String> record = new ProducerRecord<>(TOPIC, index, line);
-                RecordMetadata metadata = producer.send(record).get();
-                
-                long elapsedTime = System.currentTimeMillis() - time;
-                System.out.printf("sent record(key=%s value=%s)" +
-                                "meta(partition=%d offset=%d) time=%d\n",
-                                record.key(), record.value(),
-                                metadata.partition(), metadata.offset(), elapsedTime);
-                **/
                 index++;
                 
             }
             in.close();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(CollectEntitySpeed.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
-        } catch (IOException ex) {
-            Logger.getLogger(CollectEntitySpeed.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(CollectEntitySpeed.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
-        } catch (ExecutionException ex) {
+        } catch (IOException | InterruptedException | ExecutionException ex) {
             Logger.getLogger(CollectEntitySpeed.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
             producer.flush();

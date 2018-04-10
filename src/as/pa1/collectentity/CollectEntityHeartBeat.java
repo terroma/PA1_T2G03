@@ -17,7 +17,6 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.LongSerializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 
 public class CollectEntityHeartBeat implements CollectEntity<HeartBeat> {
     
@@ -63,8 +62,8 @@ public class CollectEntityHeartBeat implements CollectEntity<HeartBeat> {
                 producer.send(new ProducerRecord<Long, HeartBeat>(TOPIC, time, hb)).get();
                 if (guiFrame != null) {
                     // sleep for showing purposes
-                    //Thread.sleep(1000);
-                    guiFrame.updateHeartBeatText(line);
+                    Thread.sleep(1000);
+                    guiFrame.updateHeartBeatText(hb.toString());
                 }
             }
             in.close();

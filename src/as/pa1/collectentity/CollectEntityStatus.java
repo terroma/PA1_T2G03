@@ -16,9 +16,7 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.LongSerializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 
 public class CollectEntityStatus implements CollectEntity<Status> {
     
@@ -66,18 +64,9 @@ public class CollectEntityStatus implements CollectEntity<Status> {
                 Status st = new Status(Integer.parseInt(lineArgs[0]),Integer.parseInt(lineArgs[1]),lineArgs[2],lineArgs[3]);
                 producer.send(new ProducerRecord<Long, Status>(TOPIC,index,st)).get();
                 if (guiFrame != null) {
-                    guiFrame.updateStatusText(line);
+                    Thread.sleep(1000);
+                    guiFrame.updateStatusText(st.toString());
                 }
-                /**
-                final ProducerRecord<Long, String> record = new ProducerRecord<>(TOPIC, index, line);
-                RecordMetadata metadata = producer.send(record).get();
-                
-                long elapsedTime = System.currentTimeMillis() - time;
-                System.out.printf("sent record(key=%s value=%s)" +
-                                "meta(partition=%d offset=%d) time=%d\n",
-                                record.key(), record.value(),
-                                metadata.partition(), metadata.offset(), elapsedTime);
-                **/
                 index++;    
             }
             in.close();

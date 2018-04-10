@@ -21,6 +21,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.serialization.LongDeserializer;
 import org.apache.kafka.common.serialization.LongSerializer;
 
 public class BatchEntity {
@@ -43,8 +44,8 @@ public class BatchEntity {
     private Consumer<Long, EnrichedHeartBeat> createHeartBeatConsumer() {
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, CLIENT_ID);
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "1");
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, EnrichedHeartBeatDeserializer.class.getName());
         Consumer<Long, EnrichedHeartBeat> consumer = new KafkaConsumer<>(props);
         consumer.subscribe(Arrays.asList(TOPICS[0]));
@@ -54,8 +55,8 @@ public class BatchEntity {
     private Consumer<Long, EnrichedSpeed> createSpeedConsumer() {
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, CLIENT_ID);
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "2");
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, EnrichedSpeedDeserializer.class.getName());
         Consumer<Long, EnrichedSpeed> consumer = new KafkaConsumer<>(props);
         consumer.subscribe(Arrays.asList(TOPICS[1]));
@@ -65,8 +66,8 @@ public class BatchEntity {
     private Consumer<Long, EnrichedStatus> createStatusConsumer() {
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, CLIENT_ID);
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "3");
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, EnrichedStatusDeserializer.class.getName());
         Consumer<Long, EnrichedStatus> consumer = new KafkaConsumer<>(props);
         consumer.subscribe(Arrays.asList(TOPICS[2]));
@@ -78,7 +79,6 @@ public class BatchEntity {
         Consumer<Long, EnrichedHeartBeat> heartbeatConsumer = createHeartBeatConsumer();
         Consumer<Long, EnrichedSpeed> speedConsumer = createSpeedConsumer();
         Consumer<Long, EnrichedStatus> statusConsumer = createStatusConsumer();
-        
         try {
             String line = null;
             
@@ -120,7 +120,7 @@ public class BatchEntity {
                     out = new BufferedWriter(new FileWriter(PATH,true));
                     for (ConsumerRecord<Long, EnrichedStatus> statusRecord: statusRecords) {
                         if (statusRecord.value() != null) {
-                            line = statusRecord.toString();
+                            line = statusRecord.value().toString();
                             System.out.println("Writing EnrichedStatus: " + line);
                             out.write(line);
                             out.newLine();

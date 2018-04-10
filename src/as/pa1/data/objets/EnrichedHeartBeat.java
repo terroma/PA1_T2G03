@@ -17,7 +17,7 @@ public class EnrichedHeartBeat extends HeartBeat {
     
     @Override
     public String toString() {
-        return String.join("|",
+        return String.join(" | ",
                 String.format("%02d", this.getCar_id()),
                 Integer.toString(this.getTime()),
                 car_reg,

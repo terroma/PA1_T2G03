@@ -177,8 +177,7 @@ public class DigestionEntityGUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
-        /*new SwingWorker<DigestionEntityHeartBeat, Object> () {
+        new SwingWorker<DigestionEntityHeartBeat, Object> () {
             @Override
             protected DigestionEntityHeartBeat doInBackground() throws Exception {
                 deHB.runDigestionEntity();
@@ -191,7 +190,7 @@ public class DigestionEntityGUI extends javax.swing.JFrame {
                 deSP.runDigestionEntity();
                 return deSP;
             }
-        }.execute();*/
+        }.execute();
         new SwingWorker<DigestionEntityStatus, Object> () {
             @Override
             protected DigestionEntityStatus doInBackground() throws Exception {
@@ -206,8 +205,8 @@ public class DigestionEntityGUI extends javax.swing.JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                jTextArea1.append(heartbeat+"\n");
-                jTextArea2.append(enrichedHeartBeat+"\n");
+                jTextArea1.append("| "+heartbeat+" |\n");
+                jTextArea2.append("| "+enrichedHeartBeat+" |\n");
             }
         });
     }
@@ -216,8 +215,8 @@ public class DigestionEntityGUI extends javax.swing.JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                jTextArea3.append(speed+"\n");
-                jTextArea4.append(enrichedSpeed+"\n");
+                jTextArea3.append("| "+speed+" |\n");
+                jTextArea4.append("| "+enrichedSpeed+" |\n");
             }
         });
     }
@@ -226,8 +225,8 @@ public class DigestionEntityGUI extends javax.swing.JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                jTextArea5.append(status+"\n");
-                jTextArea6.append(enrichedStatus+"\n");
+                jTextArea5.append("| "+status+" |\n");
+                jTextArea6.append("| "+enrichedStatus+" |\n");
             }
         });
     }
