@@ -13,6 +13,8 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,6 +23,8 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.LongDeserializer;
 import org.apache.kafka.common.serialization.LongSerializer;
 
@@ -38,6 +42,7 @@ public class BatchEntity {
     private static final String BOOTSTRAP_SERVERS = 
             "loaclhost:9092,loacalhost:9093,localhost:9094";
     private BufferedWriter out;
+    private Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap();
     private BatchEntityGUI guiFrame;
     
     public BatchEntity() {
@@ -46,6 +51,10 @@ public class BatchEntity {
     
     public BatchEntity(BatchEntityGUI guiFrame) {
         this.guiFrame = guiFrame;
+    }
+    
+    private void addOffset(String topic, int partition, long offset) {
+        currentOffsets.put(new TopicPartition(topic, partition), new OffsetAndMetadata(offset, "Commit"));
     }
     
     private Consumer<Long, EnrichedHeartBeat> createHeartBeatConsumer() {
@@ -65,6 +74,7 @@ public class BatchEntity {
         props.put(ConsumerConfig.GROUP_ID_CONFIG, CLIENT_ID+"2");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, EnrichedSpeedDeserializer.class.getName());
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
         Consumer<Long, EnrichedSpeed> consumer = new KafkaConsumer<>(props);
         consumer.subscribe(Arrays.asList(TOPICS[1]));
         return consumer;
@@ -76,6 +86,7 @@ public class BatchEntity {
         props.put(ConsumerConfig.GROUP_ID_CONFIG, CLIENT_ID+"3");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, EnrichedStatusDeserializer.class.getName());
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
         Consumer<Long, EnrichedStatus> consumer = new KafkaConsumer<>(props);
         consumer.subscribe(Arrays.asList(TOPICS[2]));
         return consumer;
@@ -99,7 +110,7 @@ public class BatchEntity {
                     for (ConsumerRecord<Long, EnrichedHeartBeat> heartbeatRecord : heartbeatRecords) {
                         if (heartbeatRecord.value() != null ) {
                             line = heartbeatRecord.value().toString();
-                            System.out.println("Writing EnrichedHeartBeat: " + line);
+                            //System.out.println("Writing EnrichedHeartBeat: " + line);
                             out.write(line);
                             out.newLine();
                             if (guiFrame != null)
@@ -115,13 +126,16 @@ public class BatchEntity {
                     for (ConsumerRecord<Long, EnrichedSpeed> speedRecord : speedRecords) {
                         if (speedRecord.value() != null) {
                             line = speedRecord.value().toString();
-                            System.out.println("Writing EnrichedSpeed: " + line);
+                            //System.out.println("Writing EnrichedSpeed: " + line);
                             out.write(line);
                             out.newLine();
+                            addOffset(speedRecord.topic(), speedRecord.partition(), speedRecord.offset());
                             if (guiFrame != null)
                                 guiFrame.updateBatchEntityText(line);
                         }
                     }
+                    speedConsumer.commitSync(currentOffsets);
+                    currentOffsets.clear();
                     //out.flush();
                     out.close();
                 }
@@ -131,13 +145,14 @@ public class BatchEntity {
                     for (ConsumerRecord<Long, EnrichedStatus> statusRecord: statusRecords) {
                         if (statusRecord.value() != null) {
                             line = statusRecord.value().toString();
-                            System.out.println("Writing EnrichedStatus: " + line);
+                            //System.out.println("Writing EnrichedStatus: " + line);
                             out.write(line);
                             out.newLine();
                             if (guiFrame != null)
                                 guiFrame.updateBatchEntityText(line);
                         }  
                     }
+                    statusConsumer.commitAsync();
                     //out.flush();
                     out.close();
                 }
@@ -149,6 +164,7 @@ public class BatchEntity {
         } finally {
             heartbeatConsumer.close();
             speedConsumer.close();
+            statusConsumer.commitSync();
             statusConsumer.close();
         }
         

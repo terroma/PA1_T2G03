@@ -6,6 +6,8 @@ import as.pa1.gui.DigestionEntityGUI;
 import as.pa1.serialization.EnrichedSpeedSerializer;
 import as.pa1.serialization.SpeedDeserializer;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
@@ -15,10 +17,12 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.LongDeserializer;
 import org.apache.kafka.common.serialization.LongSerializer;
 
@@ -38,6 +42,7 @@ public class DigestionEntitySpeed implements DigestionEntity<Speed, EnrichedSpee
     private final static String CLIENT_ID = "DigestionEntitySPEED";
     private final static String BOOTSTRAP_SERVERS =
             "localhost:9092, localhost:9093, localhost:9094";
+    private Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap<>();
     private DigestionEntityGUI guiFrame;
     
     public DigestionEntitySpeed() {
@@ -48,6 +53,10 @@ public class DigestionEntitySpeed implements DigestionEntity<Speed, EnrichedSpee
         this.guiFrame = guiFrame;
     }
     
+    private void addOffset(String topic, int partition, long offset) {
+        currentOffsets.put(new TopicPartition(topic, partition), new OffsetAndMetadata(offset, "Commit"));
+    }
+    
     @Override
     public Consumer<Long, Speed> createConsumer() {
         Properties props = new Properties();
@@ -55,6 +64,7 @@ public class DigestionEntitySpeed implements DigestionEntity<Speed, EnrichedSpee
         props.put(ConsumerConfig.GROUP_ID_CONFIG, CLIENT_ID);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, SpeedDeserializer.class.getName());
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
         Consumer<Long, Speed> consumer = new KafkaConsumer<>(props);
         //consumer.subscribe(Collections.singleton(ENRICHTOPIC));
         consumer.subscribe(Arrays.asList(ENRICHTOPIC));
@@ -68,7 +78,8 @@ public class DigestionEntitySpeed implements DigestionEntity<Speed, EnrichedSpee
         props.put(ProducerConfig.CLIENT_ID_CONFIG, CLIENT_ID);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, EnrichedSpeedSerializer.class.getName());
-        props.put(ProducerConfig.ACKS_CONFIG, "all");       
+        props.put(ProducerConfig.ACKS_CONFIG, "all"); 
+        props.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "1");
         return new KafkaProducer<>(props);
     }
     
@@ -97,19 +108,23 @@ public class DigestionEntitySpeed implements DigestionEntity<Speed, EnrichedSpee
                                     MAX_SPEED
                             );
                             producer.send(new ProducerRecord<Long, EnrichedSpeed>(ENRICHEDTOPIC,time,enrichedSPEED)).get();
+                            addOffset(record.topic(), record.partition(), record.offset());
                             if (guiFrame != null) {
                                 guiFrame.updateSpeedText(
                                         record.value().toString(),
                                         enrichedSPEED.toString());
                             }
                         }
-                        time++;
+                        //time++;
                     }
+                    consumer.commitSync(currentOffsets);
+                    currentOffsets.clear();
                 }
             }
         } catch (InterruptedException | ExecutionException ex) {
             Logger.getLogger(DigestionEntitySpeed.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
+            consumer.commitSync();
             consumer.close();
             producer.flush();
             producer.close();

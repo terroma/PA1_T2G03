@@ -76,10 +76,10 @@ public class DigestionEntityHeartBeat implements DigestionEntity<HeartBeat, Enri
         long time = System.currentTimeMillis();
         Consumer<Long, HeartBeat> consumer = createConsumer();
         Producer<Long, EnrichedHeartBeat> producer = createProducer();
-        final int giveUp = 100;
-        int noRecordsCount = 0;
         
         try {
+            long index = time;
+            
             while (true) {
                 ConsumerRecords<Long, HeartBeat> records = consumer.poll(100);
                 if (records.count() != 0) {
@@ -94,21 +94,18 @@ public class DigestionEntityHeartBeat implements DigestionEntity<HeartBeat, Enri
                                     car_reg,
                                     record.value().getMsg_id()
                             );
-                            producer.send(new ProducerRecord<Long, EnrichedHeartBeat>(ENRICHEDTOPIC,time,enrichedHB)).get();
+                            producer.send(new ProducerRecord<Long, EnrichedHeartBeat>(ENRICHEDTOPIC,index,enrichedHB));
                             if (guiFrame != null) {
                                 guiFrame.updateHeartBeatText(
                                         record.value().toString(),
                                         enrichedHB.toString());
                             }
                         }
-                        time++;
+                        index++;
                     }
                 }
             }
-        } catch (InterruptedException | ExecutionException ex) {
-            Logger.getLogger(DigestionEntityHeartBeat.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
-        } finally {
-            //consumer.commitSync();
+       } finally {
             consumer.close();
             producer.flush();
             producer.close();

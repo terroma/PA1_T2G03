@@ -51,8 +51,8 @@ public class CollectEntityStatus implements CollectEntity<Status> {
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StatusSerializer.class.getName());
         props.put(ProducerConfig.ACKS_CONFIG, "all");
-        props.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, 1);
-        props.put("max.inflight.messages", 1);
+        props.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "1");
+        //props.put("max.inflight.messages", 1);
         return new KafkaProducer<>(props);
     }
     
@@ -71,10 +71,11 @@ public class CollectEntityStatus implements CollectEntity<Status> {
                 Status st = new Status(Integer.parseInt(lineArgs[0]),Integer.parseInt(lineArgs[1]),lineArgs[2],lineArgs[3]);
                 producer.send(new ProducerRecord<Long, Status>(TOPIC,index,st)).get();
                 if (guiFrame != null) {
+                    // sleep for showing purposes
                     Thread.sleep(1000);
                     guiFrame.updateStatusText(st.toString());
                 }
-                index++;    
+                //index++;    
             }
             in.close();
         } catch (FileNotFoundException ex) {

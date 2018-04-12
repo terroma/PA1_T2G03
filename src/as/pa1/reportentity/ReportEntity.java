@@ -10,12 +10,16 @@ import as.pa1.serialization.EnrichedStatusDeserializer;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.LongDeserializer;
 
 /**
@@ -30,6 +34,7 @@ public class ReportEntity {
     private static final String[] TOPICS = {"EnrichedTopic_1","EnrichedTopic_2","EnrichedTopic_3"};
     private static final String BOOTSTRAP_SERVERS = "localhost:9092,localhost:9093,localhost:9094";
     private ReportEntityDBConnection dbConnection;
+    private Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap();
     private ReportEntityGUI guiFrame;
     
     public ReportEntity() {
@@ -38,6 +43,10 @@ public class ReportEntity {
     
     public ReportEntity(ReportEntityGUI guiFrame) {
         this.guiFrame = guiFrame;
+    }
+    
+    private void addOffset(String topic, int partition, long offset) {
+        currentOffsets.put(new TopicPartition(topic, partition), new OffsetAndMetadata(offset, "Commit"));
     }
     
     private Consumer<Long, EnrichedHeartBeat> createHeartBeatConsumer() {
@@ -57,6 +66,7 @@ public class ReportEntity {
         props.put(ConsumerConfig.GROUP_ID_CONFIG, CLIENT_ID+"2");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, EnrichedSpeedDeserializer.class.getName());
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
         Consumer<Long, EnrichedSpeed> consumer = new KafkaConsumer<>(props);
         consumer.subscribe(Arrays.asList(TOPICS[1]));
         return consumer;
@@ -68,6 +78,7 @@ public class ReportEntity {
         props.put(ConsumerConfig.GROUP_ID_CONFIG, CLIENT_ID+"3");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, EnrichedStatusDeserializer.class.getName());
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
         Consumer<Long, EnrichedStatus> consumer = new KafkaConsumer<>(props);
         consumer.subscribe(Arrays.asList(TOPICS[2]));
         return consumer;
@@ -133,6 +144,7 @@ public class ReportEntity {
                             psSpeed.setInt(7, enrSpeed.getMax_speed());
                             psSpeed.addBatch();
                             
+                            addOffset(spRecord.topic(), spRecord.partition(), spRecord.offset());
                             if (guiFrame != null)
                                 guiFrame.updateSpeedText(enrSpeed.toString());
                             
@@ -141,6 +153,8 @@ public class ReportEntity {
                         }
                     }
                     psSpeed.executeBatch();
+                    speedConsumer.commitSync(currentOffsets);
+                    currentOffsets.clear();
                 }
                 ConsumerRecords<Long, EnrichedStatus> stRecords = statusConsumer.poll(100);
                 if (stRecords.count() != 0) {
@@ -162,6 +176,7 @@ public class ReportEntity {
                         }
                     }
                     psStatus.executeBatch();
+                    statusConsumer.commitAsync();
                 }   
             } 
         } catch (SQLException sqlEx) {
@@ -172,6 +187,7 @@ public class ReportEntity {
             dbConnection.close(psStatus);
             dbConnection.close(psSpeed);
             dbConnection.close(psHeartBeat);
+            statusConsumer.commitSync();
             statusConsumer.close();
             speedConsumer.close();
             heartbeatConsumer.close();

@@ -51,7 +51,7 @@ public class CollectEntitySpeed implements CollectEntity<Speed> {
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, SpeedSerializer.class.getName());
         props.put(ProducerConfig.ACKS_CONFIG, "all");
-        //props.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, 1);
+        props.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "1");
         //props.put("max.inflight.messages", 1);
         return new KafkaProducer<>(props);
     }
@@ -74,7 +74,7 @@ public class CollectEntitySpeed implements CollectEntity<Speed> {
                     Thread.sleep(1000);
                     guiFrame.updateSpeedText(sp.toString());
                 }
-                index++;
+                //index++;
                 
             }
             in.close();

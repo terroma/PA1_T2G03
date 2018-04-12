@@ -58,27 +58,29 @@ public class CollectEntityHeartBeat implements CollectEntity<HeartBeat> {
     public void runCollectEntity() {
         long time = System.currentTimeMillis();
         Producer<Long, HeartBeat> producer = createProducer();
-        System.out.println(producer.toString());
+        
         try {
             in = new BufferedReader(new FileReader(PATH));
             String line;
+            long index = time;
             
             while ((line = in.readLine()) != null) {
                 String[] lineArgs = line.split("\\|");
                 HeartBeat hb = new HeartBeat(Integer.parseInt(lineArgs[0]),Integer.parseInt(lineArgs[1]),lineArgs[2]);
-                producer.send(new ProducerRecord<Long, HeartBeat>(TOPIC, time, hb)).get();
+                producer.send(new ProducerRecord<Long, HeartBeat>(TOPIC, index, hb));
                 if (guiFrame != null) {
                     // sleep for showing purposes
                     Thread.sleep(1000);
                     guiFrame.updateHeartBeatText(hb.toString());
                 }
+                index++;
             }
             in.close();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(CollectEntityHeartBeat.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } catch (IOException ex) {
             Logger.getLogger(CollectEntityHeartBeat.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
-        } catch (InterruptedException | ExecutionException ex) {
+        } catch (InterruptedException ex) {
             Logger.getLogger(CollectEntityHeartBeat.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
             producer.flush();

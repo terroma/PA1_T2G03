@@ -5,12 +5,15 @@ import as.pa1.gui.AlarmEntityGUI;
 import as.pa1.serialization.EnrichedSpeedDeserializer;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.LongDeserializer;
 
 /**
@@ -27,6 +30,7 @@ public class AlarmEntity {
     private final static String BOOTSTRAP_SERVERS =
             "localhost:9092, localhost:9093, localhost:9094";
     private HashMap<Integer, Alarm> lastSpeedMap;
+    private Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap();
     private AlarmEntityGUI guiFrame;
     
     public AlarmEntity() {
@@ -38,12 +42,17 @@ public class AlarmEntity {
         lastSpeedMap = new HashMap<>();
     }
     
+    private void addOffset(String topic, int partition, long offset) {
+        currentOffsets.put(new TopicPartition(topic, partition), new OffsetAndMetadata(offset, "Commit"));
+    }
+    
     private Consumer<Long, EnrichedSpeed> createConsumer() {
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, CLIENT_ID);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, EnrichedSpeedDeserializer.class.getName());
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
         Consumer<Long, EnrichedSpeed> consumer = new KafkaConsumer<>(props);
         consumer.subscribe(Arrays.asList(TOPIC));
         return consumer;
@@ -95,6 +104,7 @@ public class AlarmEntity {
                             System.out.println("EnrichedSpeed recieved as null.");
                         } else {
                             EnrichedSpeed enrSpeed = record.value();
+                            addOffset(record.topic(), record.partition(), record.offset());
                             // compare last speed with current speed and turn on or off alarm
                             if (!lastSpeedMap.containsKey(enrSpeed.getCar_id())) {
                                 checkSpeed(enrSpeed.getCar_id(), enrSpeed.getSpeed(), enrSpeed.getMax_speed());
@@ -108,9 +118,14 @@ public class AlarmEntity {
                             }
                         }
                     }
+                    consumer.commitSync(currentOffsets);
+                    currentOffsets.clear();
                 }
             }
         } catch (Exception e) {
+            
+        } finally {
+            consumer.close();
         }
     }
     

@@ -54,6 +54,7 @@ public class DigestionEntityStatus implements DigestionEntity<Status, EnrichedSt
         props.put(ConsumerConfig.GROUP_ID_CONFIG, CLIENT_ID);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StatusDeserializer.class.getName());
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
         Consumer<Long, Status> consumer = new KafkaConsumer<>(props);
         //consumer.subscribe(Collections.singleton(ENRICHTOPIC));
         consumer.subscribe(Arrays.asList(ENRICHTOPIC));
@@ -68,6 +69,7 @@ public class DigestionEntityStatus implements DigestionEntity<Status, EnrichedSt
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, EnrichedStatusSerializer.class.getName());
         props.put(ProducerConfig.ACKS_CONFIG, "all");
+        props.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "1");
         return new KafkaProducer<>(props);
     }
     
@@ -76,6 +78,7 @@ public class DigestionEntityStatus implements DigestionEntity<Status, EnrichedSt
         long time = System.currentTimeMillis();
         Consumer<Long, Status> consumer = createConsumer();
         Producer<Long, EnrichedStatus> producer = createProducer();
+        
         try {
             while (true) {
                 ConsumerRecords<Long, Status> records = consumer.poll(100);
@@ -99,13 +102,15 @@ public class DigestionEntityStatus implements DigestionEntity<Status, EnrichedSt
                                         enrichedSTATUS.toString());
                             }
                         }
-                        time++;
+                        //time++;
                     }
+                    consumer.commitAsync();
                 }
             }
         } catch (ExecutionException | InterruptedException ex) {
             Logger.getLogger(DigestionEntityStatus.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
+            consumer.commitSync();
             consumer.close();
             producer.flush();
             producer.close();
