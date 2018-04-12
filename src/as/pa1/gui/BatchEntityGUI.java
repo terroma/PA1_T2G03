@@ -44,7 +44,7 @@ public class BatchEntityGUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Batch Entity");
-        setLocation(new java.awt.Point(1200, 450));
+        setLocation(new java.awt.Point(1200, 350));
 
         jLabel1.setText("Storing Enriched Message");
 

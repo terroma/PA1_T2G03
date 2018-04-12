@@ -83,7 +83,7 @@ public class CollectEntityGUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Collect Entity");
-        setLocation(new java.awt.Point(100, 100));
+        setLocation(new java.awt.Point(0, 200));
 
         jLabel1.setText("HeartBeat Message produced");
 

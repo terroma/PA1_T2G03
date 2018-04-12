@@ -50,22 +50,23 @@ public class ReportEntityGUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Report Entity");
+        setLocation(new java.awt.Point(1200, 600));
 
-        jLabel1.setText("inserting Enriched HeartBeat Message");
+        jLabel1.setText("Inserting Enriched HeartBeat Message");
 
         jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
 
-        jLabel2.setText("inserting Enriched Speed Message");
+        jLabel2.setText("Inserting Enriched Speed Message");
 
         jTextArea2.setEditable(false);
         jTextArea2.setColumns(20);
         jTextArea2.setRows(5);
         jScrollPane2.setViewportView(jTextArea2);
 
-        jLabel3.setText("inserting Enriched Status Message");
+        jLabel3.setText("Inserting Enriched Status Message");
 
         jTextArea3.setEditable(false);
         jTextArea3.setColumns(20);

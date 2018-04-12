@@ -38,7 +38,7 @@ public class AlarmEntityGUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Alarm Entity");
-        setLocation(new java.awt.Point(1200, 100));
+        setLocation(new java.awt.Point(1200, 0));
 
         jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
